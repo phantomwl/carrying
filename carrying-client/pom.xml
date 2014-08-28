@@ -62,5 +62,9 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.ompc.carrying</groupId>
+            <artifactId>carrying-common</artifactId>
+        </dependency>
     </dependencies>
 </project>

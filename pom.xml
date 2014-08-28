@@ -12,6 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <carrying-common.version>1.0.0-SNAPSHOT</carrying-common.version>
     </properties>
 
     <dependencyManagement>
@@ -21,6 +22,11 @@
                 <artifactId>junit</artifactId>
                 <version>4.6</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ompc.carrying</groupId>
+                <artifactId>carrying-common</artifactId>
+                <version>${carrying-common.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-lang</groupId>
@@ -64,7 +70,7 @@
     <modules>
         <module>carrying-server</module>
         <module>carrying-client</module>
-    <module>carrying-builder</module>
+    <module>carrying-common</module>
   </modules>
 
 </project>
