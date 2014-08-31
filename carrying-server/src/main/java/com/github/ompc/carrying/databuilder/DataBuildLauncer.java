@@ -18,8 +18,8 @@ public class DataBuildLauncer {
         final DataBuilder dataBuilder
             = new BufferedDataBuilder(_30M);
         final long pos;
-        pos = dataBuilder.build(new File("/Users/vlinux/1K.txt"), _1K);
-//        pos = dataBuilder.build(new File("/Users/vlinux/1G-MAP.txt"), _1G);
+//        pos = dataBuilder.build(new File("/Users/vlinux/1K.txt"), _1K);
+        pos = dataBuilder.build(new File("/Users/vlinux/1G.txt"), _1G);
 //        pos = dataBuilder.build(new File("/Users/vlinux/16G.txt"), _16G);
         System.out.println("pos="+pos);
 

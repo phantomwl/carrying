@@ -11,4 +11,9 @@ public class CarryingConstants {
      */
     public static final short MAX_LINE_LEN = 200;
 
+    /**
+     * 行分隔符
+     */
+    public static final byte[] LINE_SPLITER = {'\r','\n'};
+
 }

@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.Random;
 
+import static com.github.ompc.carrying.common.CarryingConstants.LINE_SPLITER;
+import static com.github.ompc.carrying.common.CarryingConstants.MAX_LINE_LEN;
+
 /**
  * Buffered的写文件方式
  * Created by vlinux on 14-8-28.
@@ -34,23 +37,22 @@ public class BufferedDataBuilder implements DataBuilder {
             datasource.createNewFile();
         }
 
+
+        logger.info("BufferedDataBuilder starting databuilder, databuilder={}",datasource);
         long pos = 0L;  //当前文件写入大小
-        logger.info("BufferedDataBuilder starting databuilder, datasource={}",datasource);
-        final byte[] datas = new byte[CarryingConstants.MAX_LINE_LEN+2];//+2是为了\r\n
+        final byte[] datas = new byte[MAX_LINE_LEN];
         BufferedOutputStream bos = null;
         try {
             bos = new BufferedOutputStream(new FileOutputStream(datasource),bufferSize);
             while( pos <= maxSize ) {
-                final int len = random.nextInt(200);
-                fill(datas, len);
-                bos.write(datas, 0, len+2);
-                pos+=(len+2);
+                pos+=writeData(bos, datas);
+                pos+=writeLine(bos);
             }
             bos.flush();
         } finally {
             IOUtils.closeQuietly(bos);
             final long finishTime = System.currentTimeMillis();
-            logger.info("BufferedDataBuilder build data finished, datasource={}, cost={}ms", datasource, (finishTime-startTime));
+            logger.info("BufferedDataBuilder build data finished, databuilder={}, cost={}ms", datasource, (finishTime-startTime));
         }
         return pos;
     }
@@ -67,15 +69,36 @@ public class BufferedDataBuilder implements DataBuilder {
      * 填充数据
      * @param datas
      * @param len
-     * @return 本次写入的长度
      */
-    private byte[] fill(byte[] datas, int len) {
+    private void fill(byte[] datas, int len) {
         for( int index=0; index<len; index++ ) {
             datas[index] = randomByte();
         }
-        datas[len] = '\r';
-        datas[len+1] = '\n';
-        return datas;
+    }
+
+    /**
+     * 写入数据
+     * @param bos
+     * @param datas
+     * @return
+     * @throws IOException
+     */
+    private int writeData(BufferedOutputStream bos, byte[] datas) throws IOException {
+        final int len = random.nextInt(MAX_LINE_LEN);
+        fill(datas, len);
+        bos.write(datas, 0, len);
+        return len;
+    }
+
+    /**
+     * 写入行
+     * @param bos
+     * @return
+     * @throws IOException
+     */
+    private int writeLine(BufferedOutputStream bos) throws IOException {
+        bos.write(LINE_SPLITER);
+        return LINE_SPLITER.length;
     }
 
 }
