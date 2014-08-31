@@ -50,7 +50,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
         switch( state() ) {
 
             case READ_TYPE:
-                if( byteBuf.readableBytes() >= Byte.BYTES ) {
+                if( byteBuf.readableBytes() >= 1 ) {
                     this.type = byteBuf.readByte();
                     switch( type ) {
 
@@ -93,14 +93,14 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                 break;
 
             case READ_LINE_NUM:
-                if( byteBuf.readableBytes() >= Long.BYTES ) {
+                if( byteBuf.readableBytes() >= 8 ) {
                     this.lineNum = byteBuf.readLong();
                     checkpoint(READ_DATA_LEN);
                 }
                 break;
 
             case READ_DATA_LEN:
-                if( byteBuf.readableBytes() >= Byte.BYTES ) {
+                if( byteBuf.readableBytes() >= 1 ) {
                     this.length = byteBuf.readByte()&0xff;
                     checkpoint(READ_DATA);
                 }
@@ -118,7 +118,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                 break;
 
             case READ_QUEUE_NUM:
-                if( byteBuf.readableBytes() >= Byte.BYTES ) {
+                if( byteBuf.readableBytes() >= 1 ) {
                     this.queueNum = byteBuf.readByte();
                     final CarryingGetQueueResponse resp = new CarryingGetQueueResponse();
                     resp.setQueueNum(this.queueNum);
