@@ -33,7 +33,7 @@ public class CarryingServer {
     public void startup() {
         final EventLoopGroup bossGroup = new NioEventLoopGroup();
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
-        final CarryingServerHandler carryingServerHandler = new CarryingServerHandler(this.configer);
+        final CarryingServerHandler carryingServerHandler = new CarryingServerHandler(this.configer, dataProvider);
         logger.info("carrying-server was going to startup...");
         final ServerBootstrap boot = new ServerBootstrap()
                 .group(bossGroup, workerGroup)

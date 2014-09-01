@@ -9,11 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import static com.github.ompc.carrying.common.CarryingConstants.*;
+import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_REQ_GET_DATA;
+import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_REQ_GET_DATA_AGAIN;
 import static io.netty.channel.ChannelHandler.Sharable;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * 搬数据服务端处理器
@@ -34,9 +35,10 @@ public class CarryingServerHandler extends ChannelInboundHandlerAdapter {
      */
     private final ExecutorService carryingWorkers;
 
+
     public CarryingServerHandler(ServerConfiger configer) {
         this.configer = configer;
-        this.carryingWorkers = Executors.newFixedThreadPool(this.configer.carryingWorkerNums, new ThreadFactory() {
+        this.carryingWorkers = newFixedThreadPool(this.configer.carryingWorkerNums, new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
                 return new Thread(r, "carrying-worker");
@@ -79,19 +81,13 @@ public class CarryingServerHandler extends ChannelInboundHandlerAdapter {
     private void handleRequest(ChannelHandlerContext ctx, CarryingRequest request) {
 
         final byte type = request.getType();
-        if (type == PROTOCOL_TYPE_REQ_GET_QUEUE) {
-            _handleReqGetQueue(ctx, request);
-        } else if (type == PROTOCOL_TYPE_REQ_GET_DATA) {
+        if (type == PROTOCOL_TYPE_REQ_GET_DATA) {
             _handleReqGetData(ctx, request);
         } else if (type == PROTOCOL_TYPE_REQ_GET_DATA_AGAIN) {
             _handleReqGetDataAgain(ctx, request);
         } else {
             logger.warn("channel={} receive an illegal type={}", ctx.channel(), type);
         }
-
-    }
-
-    private void _handleReqGetQueue(ChannelHandlerContext ctx, CarryingRequest request) {
 
     }
 
