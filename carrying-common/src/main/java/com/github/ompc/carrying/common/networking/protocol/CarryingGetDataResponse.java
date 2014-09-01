@@ -1,6 +1,6 @@
 package com.github.ompc.carrying.common.networking.protocol;
 
-import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_RESP_GET_DATA_SUCCESS;
+import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_RESP_GET_DATA_SUC;
 
 /**
  * 返回报文封装:获取数据返回报文
@@ -11,15 +11,17 @@ public class CarryingGetDataResponse extends CarryingResponse {
     /**
      * 行号
      */
-    private long lineNum;
+    private final long lineNum;
 
     /**
      * 数据段
      */
-    private byte[] data;
+    private final byte[] data;
 
-    public CarryingGetDataResponse() {
-        super(PROTOCOL_TYPE_RESP_GET_DATA_SUCCESS);
+    public CarryingGetDataResponse(long lineNum, byte[] data) {
+        super(PROTOCOL_TYPE_RESP_GET_DATA_SUC);
+        this.lineNum = lineNum;
+        this.data = data;
     }
 
     /**
@@ -31,14 +33,6 @@ public class CarryingGetDataResponse extends CarryingResponse {
     }
 
     /**
-     * 设置行号
-     * @param lineNum
-     */
-    public void setLineNum(long lineNum) {
-        this.lineNum = lineNum;
-    }
-
-    /**
      * 获取数据段
      * @return
      */
@@ -46,11 +40,4 @@ public class CarryingGetDataResponse extends CarryingResponse {
         return data;
     }
 
-    /**
-     * 设置数据段
-     * @param data
-     */
-    public void setData(byte[] data) {
-        this.data = data;
-    }
 }

@@ -1,8 +1,6 @@
 package com.github.ompc.carrying.common.networking.protocol.coder;
 
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.protocol.CarryingGetDataResponse;
-import com.github.ompc.carrying.common.networking.protocol.CarryingGetQueueResponse;
 import com.github.ompc.carrying.common.networking.protocol.CarryingProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -30,21 +28,13 @@ public class ProtocolEncoder extends MessageToByteEncoder<CarryingProtocol> {
 
         switch ( type ) {
 
-            case PROTOCOL_TYPE_REQ_GET_QUEUE:
-            case PROTOCOL_TYPE_RESP_GET_QUEUE_NAQ:
             case PROTOCOL_TYPE_REQ_GET_DATA:
             case PROTOCOL_TYPE_REQ_GET_DATA_AGAIN:
             case PROTOCOL_TYPE_RESP_GET_DATA_EOF:
             case PROTOCOL_TYPE_RESP_GET_DATA_NAQ:
                 break;
 
-            case PROTOCOL_TYPE_RESP_GET_QUEUE_SUCCESS: {
-                final CarryingGetQueueResponse resp = (CarryingGetQueueResponse) carryingProtocol;
-                byteBuf.writeByte(resp.getQueueNum());
-                break;
-            }
-
-            case PROTOCOL_TYPE_RESP_GET_DATA_SUCCESS: {
+            case PROTOCOL_TYPE_RESP_GET_DATA_SUC: {
                 final CarryingGetDataResponse resp = (CarryingGetDataResponse) carryingProtocol;
                 byteBuf.writeLong(resp.getLineNum());
                 byteBuf.writeByte((byte)(resp.getData().length));
