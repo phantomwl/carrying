@@ -11,11 +11,11 @@ public class CarryingRequest extends CarryingProtocol {
 
     /**
      * 创建获取数据请求
-     * @param queuNum 请求队列号
+     * @param queueNum 请求队列号
      * @return 请求数据报文对象
      */
-    public static CarryingRequest createGetDataRequest(byte queuNum) {
-         return new CarryingRequest(PROTOCOL_TYPE_REQ_GET_DATA, queuNum);
+    public static CarryingRequest createGetDataRequest(byte queueNum) {
+         return new CarryingRequest(PROTOCOL_TYPE_REQ_GET_DATA, queueNum);
     }
 
     /**
