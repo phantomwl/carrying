@@ -1,7 +1,6 @@
 package com.github.ompc.carrying.common.networking.protocol.coder;
 
 import com.github.ompc.carrying.common.networking.protocol.CarryingGetDataResponse;
-import com.github.ompc.carrying.common.networking.protocol.CarryingGetQueueResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
@@ -11,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.github.ompc.carrying.common.CarryingConstants.*;
-import static com.github.ompc.carrying.common.networking.protocol.CarryingRequest.*;
-import static com.github.ompc.carrying.common.networking.protocol.CarryingResponse.*;
+import static com.github.ompc.carrying.common.networking.protocol.CarryingRequest.createGetDataAgainRequest;
+import static com.github.ompc.carrying.common.networking.protocol.CarryingRequest.createGetDataRequest;
+import static com.github.ompc.carrying.common.networking.protocol.CarryingResponse.RESP_GET_DATA_EOF;
+import static com.github.ompc.carrying.common.networking.protocol.CarryingResponse.RESP_GET_DATA_NAQ;
 import static com.github.ompc.carrying.common.networking.protocol.coder.ProtocolDecoder.State.*;
 
 /**
@@ -26,10 +27,10 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
      */
     public static enum State {
         READ_TYPE,
-        READ_LINE_NUM,
-        READ_DATA_LEN,
-        READ_DATA,
-        READ_QUEUE_NUM
+        READ_RESP_GET_LINE_NUM,
+        READ_RESP_GET_LEN,
+        READ_RESP_GET_DATA,
+        READ_REQ_GET_QUEUE_NUM
     }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -54,16 +55,9 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                     this.type = byteBuf.readByte();
                     switch( type ) {
 
-                        case PROTOCOL_TYPE_REQ_GET_QUEUE:
-                            objects.add(REQ_GET_QUEUE);
-                            break STATE_SWITCH;
-
                         case PROTOCOL_TYPE_REQ_GET_DATA:
-                            objects.add(REQ_GET_DATA);
-                            break STATE_SWITCH;
-
                         case PROTOCOL_TYPE_REQ_GET_DATA_AGAIN:
-                            objects.add(REQ_GET_DATA_AGAIN);
+                            checkpoint(READ_REQ_GET_QUEUE_NUM);
                             break STATE_SWITCH;
 
                         case PROTOCOL_TYPE_RESP_GET_DATA_EOF:
@@ -74,16 +68,8 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                             objects.add(RESP_GET_DATA_NAQ);
                             break STATE_SWITCH;
 
-                        case PROTOCOL_TYPE_RESP_GET_QUEUE_NAQ:
-                            objects.add(RESP_GET_QUEUE_NAQ);
-                            break STATE_SWITCH;
-
-                        case PROTOCOL_TYPE_RESP_GET_DATA_SUCCESS:
-                            checkpoint(READ_LINE_NUM);
-                            break;
-
-                        case PROTOCOL_TYPE_RESP_GET_QUEUE_SUCCESS:
-                            checkpoint(READ_QUEUE_NUM);
+                        case PROTOCOL_TYPE_RESP_GET_DATA_SUC:
+                            checkpoint(READ_RESP_GET_LINE_NUM);
                             break;
 
                         default:
@@ -92,37 +78,38 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                 }//if
                 break;
 
-            case READ_LINE_NUM:
+            case READ_RESP_GET_LINE_NUM:
                 if( byteBuf.readableBytes() >= 8 ) {
                     this.lineNum = byteBuf.readLong();
-                    checkpoint(READ_DATA_LEN);
+                    checkpoint(READ_RESP_GET_LEN);
                 }
                 break;
 
-            case READ_DATA_LEN:
+            case READ_RESP_GET_LEN:
                 if( byteBuf.readableBytes() >= 1 ) {
                     this.length = byteBuf.readByte()&0xff;
-                    checkpoint(READ_DATA);
+                    checkpoint(READ_RESP_GET_DATA);
                 }
                 break;
 
-            case READ_DATA:
+            case READ_RESP_GET_DATA:
                 if( byteBuf.readableBytes() >= this.length ) {
-                    final CarryingGetDataResponse resp = new CarryingGetDataResponse();
-                    resp.setLineNum(this.lineNum);
                     final byte[] data = new byte[this.length];
                     byteBuf.readBytes(data);
-                    resp.setData(data);
-                    objects.add(resp);
+                    objects.add(new CarryingGetDataResponse(this.lineNum, data));
                 }
                 break;
 
-            case READ_QUEUE_NUM:
+            case READ_REQ_GET_QUEUE_NUM:
                 if( byteBuf.readableBytes() >= 1 ) {
                     this.queueNum = byteBuf.readByte();
-                    final CarryingGetQueueResponse resp = new CarryingGetQueueResponse();
-                    resp.setQueueNum(this.queueNum);
-                    objects.add(resp);
+                    if( this.type == PROTOCOL_TYPE_REQ_GET_DATA ) {
+                        objects.add(createGetDataRequest(this.queueNum));
+                    } else if( this.type == PROTOCOL_TYPE_REQ_GET_DATA_AGAIN ) {
+                        objects.add(createGetDataAgainRequest(this.queueNum));
+                    } else {
+                        throw new ProtocolCoderException("illegal protocol type:"+type+" for REQ");
+                    }//if
                 }
                 break;
 

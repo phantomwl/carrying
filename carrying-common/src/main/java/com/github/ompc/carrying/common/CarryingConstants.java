@@ -23,20 +23,20 @@ public class CarryingConstants {
      */
     public static final byte PROTOCOL_MAGIC_CODE_MASK = -96;
 
-    /**
-     * 协议类型:请求队列:10100001
-     */
-    public static final byte PROTOCOL_TYPE_REQ_GET_QUEUE = -95;
+//    /**
+//     * 协议类型:请求队列:10100001
+//     */
+//    public static final byte PROTOCOL_TYPE_REQ_GET_QUEUE = -95;
 
-    /**
-     * 协议类型:请求队列返回成功:10101001
-     */
-    public static final byte PROTOCOL_TYPE_RESP_GET_QUEUE_SUCCESS = -87;
+//    /**
+//     * 协议类型:请求队列返回成功:10101001
+//     */
+//    public static final byte PROTOCOL_TYPE_RESP_GET_QUEUE_SUCCESS = -87;
 
-    /**
-     * 协议类型:请求队列返回失败_无可用队列:10101010
-     */
-    public static final byte PROTOCOL_TYPE_RESP_GET_QUEUE_NAQ = -86;
+//    /**
+//     * 协议类型:请求队列返回失败_无可用队列:10101010
+//     */
+//    public static final byte PROTOCOL_TYPE_RESP_GET_QUEUE_NAQ = -86;
 
     /**
      * 协议类型:请求并确认上次回传数据:10100010
@@ -51,7 +51,7 @@ public class CarryingConstants {
     /**
      * 协议类型:请求数据返回数据:10101011
      */
-    public static final byte PROTOCOL_TYPE_RESP_GET_DATA_SUCCESS = -85;
+    public static final byte PROTOCOL_TYPE_RESP_GET_DATA_SUC = -85;
 
     /**
      * 协议类型:请求数据到达文件末端:10101100

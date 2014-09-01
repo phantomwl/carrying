@@ -8,7 +8,6 @@ import static com.github.ompc.carrying.common.CarryingConstants.*;
  */
 public class CarryingResponse extends CarryingProtocol {
 
-    public static final CarryingResponse RESP_GET_QUEUE_NAQ = new CarryingResponse(PROTOCOL_TYPE_RESP_GET_QUEUE_NAQ);
     public static final CarryingResponse RESP_GET_DATA_EOF = new CarryingResponse(PROTOCOL_TYPE_RESP_GET_DATA_EOF);
     public static final CarryingResponse RESP_GET_DATA_NAQ = new CarryingResponse(PROTOCOL_TYPE_RESP_GET_DATA_NAQ);
 
