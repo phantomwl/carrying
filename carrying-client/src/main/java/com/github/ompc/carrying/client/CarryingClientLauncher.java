@@ -77,7 +77,7 @@ public class CarryingClientLauncher {
 
                     lock.lock();
                     try {
-                        condition.await(100, MILLISECONDS);
+                        condition.await(500, MILLISECONDS);
 //                        condition.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -161,7 +161,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.sendBufferSize = CLI_NUM*4;
+//            option.sendBufferSize = CLI_NUM*4;
             option.tcpNoDelay = true;
             new CarryingClientLauncher(option);
         } finally {
