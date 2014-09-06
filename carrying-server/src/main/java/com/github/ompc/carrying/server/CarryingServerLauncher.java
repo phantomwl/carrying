@@ -26,7 +26,7 @@ public class CarryingServerLauncher {
         option.childTcpNoDelay = true;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
-        final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
+        final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*256);
 
         final RowDataSource rowDataSource
                 = new DefaultRowDataSource(args[0]);
