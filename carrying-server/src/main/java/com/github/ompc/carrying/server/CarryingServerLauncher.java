@@ -22,7 +22,7 @@ public class CarryingServerLauncher {
 
         final CarryingProvider.Option option = new CarryingProvider.Option();
         option.serverPort = Integer.valueOf(args[1]);
-        option.childTcpNoDelay = true;
+        option.childTcpNoDelay = false;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);

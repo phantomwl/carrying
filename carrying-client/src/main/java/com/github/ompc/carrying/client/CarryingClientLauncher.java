@@ -27,8 +27,8 @@ public class CarryingClientLauncher {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
-    private final int CPU_NUM = Runtime.getRuntime().availableProcessors();
-    private final int CARRIER_NUM = CPU_NUM * 20;
+    private final int CPU_NUM = Runtime.getRuntime().availableProcessors() * 2;
+    private final int CARRIER_NUM = CPU_NUM * 4;
     private final CarryingConsumer[] consumers = new CarryingConsumer[CPU_NUM];
     private final AtomicInteger carrierIndex = new AtomicInteger();
     private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
@@ -160,7 +160,7 @@ public class CarryingClientLauncher {
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
             option.sendBufferSize = 4096;
-            option.tcpNoDelay = true;
+            option.tcpNoDelay = false;
             new CarryingClientLauncher(option);
         } finally {
 
