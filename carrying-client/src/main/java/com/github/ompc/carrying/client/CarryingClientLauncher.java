@@ -159,8 +159,8 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.sendBufferSize = 4096;
-            option.tcpNoDelay = false;
+            option.sendBufferSize = 64;
+            option.tcpNoDelay = true;
             new CarryingClientLauncher(option);
         } finally {
 
