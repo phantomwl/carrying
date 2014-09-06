@@ -25,11 +25,13 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public class CarryingClientLauncher {
 
+    private static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
+    private static final int CLI_NUM = CPU_NUM * 2;
+    private static final int CARRIER_NUM = CPU_NUM * 8;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
-    private final int CPU_NUM = Runtime.getRuntime().availableProcessors() * 2;
-    private final int CARRIER_NUM = CPU_NUM * 4;
-    private final CarryingConsumer[] consumers = new CarryingConsumer[CPU_NUM];
+    private final CarryingConsumer[] consumers = new CarryingConsumer[CLI_NUM];
     private final AtomicInteger carrierIndex = new AtomicInteger();
     private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
 
@@ -45,7 +47,7 @@ public class CarryingClientLauncher {
         public void run() {
 
             final int index = carrierIndex.getAndIncrement();
-            final CarryingConsumer consumer = consumers[index%CPU_NUM];
+            final CarryingConsumer consumer = consumers[index%CLI_NUM];
             final ReentrantLock lock = new ReentrantLock();
             final Condition condition = lock.newCondition();
 
@@ -131,12 +133,12 @@ public class CarryingClientLauncher {
      * @throws IOException
      */
     private void initConsumers(CarryingConsumer.Option option) throws IOException {
-        for( int index=0; index<CPU_NUM; index++ ) {
+        for( int index=0; index<CLI_NUM; index++ ) {
             final CarryingConsumer consumer = new CarryingConsumer(option, pool);
             consumers[index] = consumer;
             consumer.connect();
         }
-        logger.info("init consumers finished. count={}",CPU_NUM);
+        logger.info("init consumers finished. count={}",CLI_NUM);
     }
 
     /**
@@ -159,7 +161,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.sendBufferSize = 64;
+            option.sendBufferSize = CLI_NUM*4;
             option.tcpNoDelay = true;
             new CarryingClientLauncher(option);
         } finally {

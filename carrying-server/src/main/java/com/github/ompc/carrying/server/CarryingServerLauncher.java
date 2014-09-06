@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.server;
 
+import com.github.ompc.carrying.server.datasource.DummyRowDataSource;
 import com.github.ompc.carrying.server.provider.CarryingProvider;
 import com.github.ompc.carrying.server.cache.DefaultRowCache;
 import com.github.ompc.carrying.server.cache.RowCache;
@@ -27,7 +28,9 @@ public class CarryingServerLauncher {
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
 
-        final RowDataSource rowDataSource = new DefaultRowDataSource(args[0]);
+        final RowDataSource rowDataSource
+//                = new DefaultRowDataSource(args[0]);
+                = new DummyRowDataSource();
         final RowCache rowCache = new DefaultRowCache();
         final CarryingServerProcess process = new CarryingServerProcess(rowDataSource, rowCache);
 
