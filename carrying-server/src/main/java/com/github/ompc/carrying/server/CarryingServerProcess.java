@@ -38,12 +38,12 @@ public class CarryingServerProcess implements CarryingProcess {
         try {
 
             Row row;
-//            if( isReTry ) {
-//                row = rowCache.getRow(index);
-//                if( null != row ) {
-//                    return newResponse(request, row);
-//                }
-//            }
+            if( isReTry ) {
+                row = rowCache.getRow(index);
+                if( null != row ) {
+                    return newResponse(request, row);
+                }
+            }
 
             // 没命中缓存或第一次
             row = rowDataSource.getRow();
