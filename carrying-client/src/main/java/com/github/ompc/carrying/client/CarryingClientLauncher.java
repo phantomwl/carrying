@@ -28,7 +28,7 @@ public class CarryingClientLauncher {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
     private final int CPU_NUM = Runtime.getRuntime().availableProcessors();
-    private final int CARRIER_NUM = CPU_NUM * 2;
+    private final int CARRIER_NUM = CPU_NUM * 20;
     private final CarryingConsumer[] consumers = new CarryingConsumer[CPU_NUM];
     private final AtomicInteger carrierIndex = new AtomicInteger();
     private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
