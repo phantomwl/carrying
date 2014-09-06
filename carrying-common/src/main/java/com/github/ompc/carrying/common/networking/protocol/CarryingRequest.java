@@ -1,44 +1,51 @@
 package com.github.ompc.carrying.common.networking.protocol;
 
-import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_REQ_GET_DATA;
-import static com.github.ompc.carrying.common.CarryingConstants.PROTOCOL_TYPE_REQ_GET_DATA_AGAIN;
+import com.github.ompc.carrying.common.util.SequenceUtil;
+
+import static com.github.ompc.carrying.common.util.SequenceUtil.generateSequence;
+import static com.github.ompc.carrying.common.util.SequenceUtil.index;
 
 /**
- * 请求报文封装
- * Created by vlinux on 14-8-31.
+ * 搬运请求报文
+ * Created by oldmanpushcart@gmail.com on 14-8-31.
  */
-public class CarryingRequest extends CarryingProtocol {
+public final class CarryingRequest extends CarryingProtocol {
 
     /**
-     * 创建获取数据请求
-     * @param queueNum 请求队列号
-     * @return 请求数据报文对象
+     * 创建搬运请求报文
+     *
+     * @param cursor
+     * @param isReTry
+     * @param index
      */
-    public static CarryingRequest createGetDataRequest(byte queueNum) {
-         return new CarryingRequest(PROTOCOL_TYPE_REQ_GET_DATA, queueNum);
+    public CarryingRequest(int cursor, boolean isReTry, int index) {
+        super(generateSequence(cursor, isReTry, index));
     }
 
     /**
-     * 创建再次获取数据请求
-     * @param queueNum 请求队列号
-     * @return 再次请求数据报文对象
+     * 创建搬运请求报文
+     * @param sequence
      */
-    public static CarryingRequest createGetDataAgainRequest(byte queueNum) {
-        return new CarryingRequest(PROTOCOL_TYPE_REQ_GET_DATA_AGAIN, queueNum);
+    public CarryingRequest(int sequence) {
+        super(sequence);
     }
 
     /**
-     * 请求队列编号
+     * 获取本次搬运请求报文的分组编号
+     *
+     * @return 分组编号
      */
-    private final byte queueNum;
-
-    CarryingRequest(byte type, byte queueNum) {
-        super(type);
-        this.queueNum = queueNum;
+    public int getIndex() {
+        return index(getSequence());
     }
 
-    public byte getQueueNum() {
-        return queueNum;
+    /**
+     * 判断本次搬运请求是否为重试请求
+     *
+     * @return true:重试请求 / false:普通请求
+     */
+    public boolean isReTry() {
+        return SequenceUtil.isReTry(getSequence());
     }
 
 }

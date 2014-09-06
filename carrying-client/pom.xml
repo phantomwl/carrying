@@ -43,7 +43,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <!--<mainClass>com.github.ompc.nchat.NChatLauncher</mainClass>-->
+                                    <mainClass>com.github.ompc.carrying.client.CarryingClientLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -63,6 +63,26 @@
         <dependency>
             <groupId>com.github.ompc.carrying</groupId>
             <artifactId>carrying-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
     </dependencies>
 </project>

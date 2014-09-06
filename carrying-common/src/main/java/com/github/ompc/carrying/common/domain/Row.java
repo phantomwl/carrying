@@ -1,10 +1,12 @@
-package com.github.ompc.carrying.common.data;
+package com.github.ompc.carrying.common.domain;
+
+import java.io.Serializable;
 
 /**
- * 数据封包
+ * 行数据
  * Created by vlinux on 14-9-1.
  */
-public final class DataWrap {
+public class Row {
 
     /**
      * 行号
@@ -12,7 +14,7 @@ public final class DataWrap {
     private long lineNum;
 
     /**
-     * 数据对象
+     * 数据段
      */
     private byte[] data;
 
@@ -31,4 +33,5 @@ public final class DataWrap {
     public void setData(byte[] data) {
         this.data = data;
     }
+
 }
