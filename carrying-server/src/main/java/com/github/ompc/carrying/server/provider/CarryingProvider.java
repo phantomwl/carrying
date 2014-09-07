@@ -50,6 +50,9 @@ public class CarryingProvider {
 
                 final Socket socket = serverSocket.accept();
                 socket.setTcpNoDelay(option.childTcpNoDelay);
+                socket.setSendBufferSize(option.childSendBufferSize);
+                socket.setReceiveBufferSize(option.childReceiveBufferSize);
+                socket.setTrafficClass(255);
 
                 childPool.execute(new Runnable() {
 
@@ -160,6 +163,16 @@ public class CarryingProvider {
          * SOCKET是否启用Nagle
          */
         public boolean childTcpNoDelay = false;
+
+        /**
+         * SOCKET接收缓存大小
+         */
+        public int childReceiveBufferSize = 8192;
+
+        /**
+         * SOCKET发送缓存大小
+         */
+        public int childSendBufferSize = 8192;
 
     }
 

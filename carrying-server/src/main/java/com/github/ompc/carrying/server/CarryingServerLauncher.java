@@ -24,6 +24,8 @@ public class CarryingServerLauncher {
         final CarryingProvider.Option option = new CarryingProvider.Option();
         option.serverPort = Integer.valueOf(args[1]);
         option.childTcpNoDelay = true;
+        option.childReceiveBufferSize = 1024*10;
+        option.childSendBufferSize = 1024*10;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
