@@ -98,7 +98,7 @@ public class CarryingClientLauncher {
                         Carrier.this.isRunning = false;
                     } else {
                         // TODO write to file.
-                        logger.info("response={}",new String(response.getData()));
+//                        logger.info("response={}",new String(response.getData()));
                     }
 
                     isReTry = false;
