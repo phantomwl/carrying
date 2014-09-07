@@ -17,5 +17,12 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
     @Override
     public synchronized void flush() throws IOException {
 //        super.flush();
+        int flushSize = count / buf.length * buf.length;
+        if( flushSize > 0 ) {
+            out.write(buf, 0, flushSize);
+            out.flush();
+            count -= flushSize;
+        }
+
     }
 }
