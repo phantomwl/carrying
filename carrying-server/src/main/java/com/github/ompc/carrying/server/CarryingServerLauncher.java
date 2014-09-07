@@ -27,7 +27,7 @@ public class CarryingServerLauncher {
         option.childReceiveBufferSize = 1024*1024*4*0xFF;
         option.childSendBufferSize =
                 // 1024*1024*4;
-                212*0xFF * 1024;
+                212*0xFF * 8;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
