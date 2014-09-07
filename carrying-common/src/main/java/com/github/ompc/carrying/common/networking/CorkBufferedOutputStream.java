@@ -1,8 +1,15 @@
 package com.github.ompc.carrying.common.networking;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * 实现Cork算法的缓存输出流
@@ -10,19 +17,63 @@ import java.io.OutputStream;
  */
 public class CorkBufferedOutputStream extends BufferedOutputStream {
 
-    public CorkBufferedOutputStream(OutputStream out, int size) {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final int DEFAULT_MAX_FLUSH_TIMES = 8;
+
+    private volatile boolean isNeedFlush = false;
+    private volatile int flushTimes = 0;
+
+    private int maxFlushTimes = DEFAULT_MAX_FLUSH_TIMES;
+
+    public CorkBufferedOutputStream(OutputStream out, int size, int maxFlushTimes) {
         super(out, size);
+        this.maxFlushTimes = maxFlushTimes;
+        final Thread flusher = new Thread("CorkBufferedOutputStream-Flusher-Daemon") {
+
+            @Override
+            public void run() {
+                final ReentrantLock lock = new ReentrantLock();
+                final Condition condition = lock.newCondition();
+                while(true) {
+                    lock.lock();
+                    try {
+
+                        try {
+                            condition.await(200, MILLISECONDS);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }//try
+
+                        isNeedFlush = true;
+                        try {
+                            CorkBufferedOutputStream.this.flush();
+                        } catch (IOException ioException) {
+                            logger.warn("Flusher flush buffer failed.", ioException);
+                        }
+
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+            }
+
+        };
+        flusher.setDaemon(true);
+        flusher.start();
     }
 
     @Override
     public synchronized void flush() throws IOException {
-//        super.flush();
-        int flushSize = count / buf.length * buf.length;
-        if( flushSize > 0 ) {
-            out.write(buf, 0, flushSize);
-            out.flush();
-            count -= flushSize;
+
+        // 检查刷新次数
+        if( isNeedFlush
+            || flushTimes++ >= maxFlushTimes  ) {
+            flushTimes = 0;
+            isNeedFlush = false;
+            super.flush();
         }
 
     }
+
 }

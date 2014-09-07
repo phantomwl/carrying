@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.server.provider;
 
+import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
@@ -14,7 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
-import static com.github.ompc.carrying.common.CarryingConstants.REQUEST_PADDING;
+import static com.github.ompc.carrying.common.CarryingConstants.*;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -54,6 +55,8 @@ public class CarryingProvider {
                 socket.setTcpNoDelay(option.childTcpNoDelay);
                 socket.setSendBufferSize(option.childSendBufferSize);
                 socket.setReceiveBufferSize(option.childReceiveBufferSize);
+//                socket.setPerformancePreferences(0,0,3);
+//                socket.setTrafficClass(255);
 
                 childPool.execute(new Runnable() {
 
@@ -65,14 +68,12 @@ public class CarryingProvider {
 
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
                             final DataOutputStream dos =
-                                    //new DataOutputStream(socket.getOutputStream());
-                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(),option.childSendBufferSize));
+//                                    new DataOutputStream(socket.getOutputStream());
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.childSendBufferSize, 20));
 
                             while (socket.isConnected()) {
 
                                 final int sequence = dis.readInt();
-                                dis.read(REQUEST_PADDING);
-
                                 businessPool.execute(new Runnable() {
 
                                     @Override
@@ -120,7 +121,7 @@ public class CarryingProvider {
             }
 
         } catch (IOException ioException) {
-
+            logger.warn("server accept failed.", ioException);
         }
 
     }

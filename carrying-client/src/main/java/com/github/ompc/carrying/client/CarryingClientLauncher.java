@@ -2,7 +2,6 @@ package com.github.ompc.carrying.client;
 
 import com.github.ompc.carrying.client.consumer.CarryingConsumer;
 import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
 import org.slf4j.Logger;
@@ -14,11 +13,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
+import static java.lang.Runtime.getRuntime;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -27,16 +26,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public class CarryingClientLauncher {
 
-    private static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
-    private static final int CLI_NUM = 2;
-            //CPU_NUM * 2;
-    private static final int CARRIER_NUM = CPU_NUM * 20;
-                    // CLI_NUM * 10;
+    private static final int CPU_NUM = getRuntime().availableProcessors();
+    private static final int CLI_NUM = 2;//CPU_NUM;
+    private static final int CARRIER_NUM = CPU_NUM * 10;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
     private final CarryingConsumer[] consumers = new CarryingConsumer[CLI_NUM];
-    private final AtomicInteger carrierIndex = new AtomicInteger();
+    private final AtomicInteger carrierIndex = new AtomicInteger(0);
     private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
 
     /**
@@ -98,6 +95,7 @@ public class CarryingClientLauncher {
                         Carrier.this.isRunning = false;
                     } else {
                         // TODO write to file.
+//                        logger.info("response={}",new String(response.getData()));
                     }
 
                     isReTry = false;
@@ -165,7 +163,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.tcpNoDelay = false;
+            option.tcpNoDelay = true;
             option.sendBufferSize =
                     //CARRIER_NUM * 8 * 2;
                     CORK_BUFFER_SIZE;
