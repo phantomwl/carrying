@@ -12,7 +12,7 @@ public class DummyRowDataSource implements RowDataSource {
     @Override
     public Row getRow() throws IOException {
         final Row row = new Row();
-        row.setLineNum(1000L);
+        row.setLineNum(1000);
         row.setData("FUCK_YOURSELF_!!!".getBytes());
         return row;
     }

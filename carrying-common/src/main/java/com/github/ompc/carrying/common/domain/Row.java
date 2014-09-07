@@ -11,18 +11,18 @@ public class Row {
     /**
      * 行号
      */
-    private long lineNum;
+    private int lineNum;
 
     /**
      * 数据段
      */
     private byte[] data;
 
-    public long getLineNum() {
+    public int getLineNum() {
         return lineNum;
     }
 
-    public void setLineNum(long lineNum) {
+    public void setLineNum(int lineNum) {
         this.lineNum = lineNum;
     }
 

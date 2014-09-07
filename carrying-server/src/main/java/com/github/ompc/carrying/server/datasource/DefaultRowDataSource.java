@@ -57,7 +57,7 @@ public class DefaultRowDataSource implements RowDataSource {
     private File file;
     private FileChannel fileChannel;
     private long fileLength;
-    private volatile long lineNum = 0;
+    private volatile int lineNum = 0;
     private long cursor = 0;
 
     private Runnable bufferLoader = new Runnable () {
