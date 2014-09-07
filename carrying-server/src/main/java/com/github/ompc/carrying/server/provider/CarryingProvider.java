@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.server.provider;
 
+import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
 import org.slf4j.Logger;
@@ -63,7 +64,9 @@ public class CarryingProvider {
                         try {
 
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
-                            final DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                            final DataOutputStream dos =
+                                    //new DataOutputStream(socket.getOutputStream());
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(),option.childSendBufferSize));
 
                             while (socket.isConnected()) {
 

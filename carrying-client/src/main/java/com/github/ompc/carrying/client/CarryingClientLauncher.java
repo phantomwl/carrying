@@ -163,7 +163,7 @@ public class CarryingClientLauncher {
             option.serverAddress = address;
             option.tcpNoDelay = false;
             option.sendBufferSize = CARRIER_NUM * 4;
-            option.receiveBufferSize = CARRIER_NUM * 200;
+            option.receiveBufferSize = 1024*1024*4;
 //            option.sendBufferSize = 1024*1024;
             new CarryingClientLauncher(option);
         } finally {

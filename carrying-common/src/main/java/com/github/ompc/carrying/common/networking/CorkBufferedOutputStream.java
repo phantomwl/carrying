@@ -1,4 +1,4 @@
-package com.github.ompc.carrying.client.consumer;
+package com.github.ompc.carrying.common.networking;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
