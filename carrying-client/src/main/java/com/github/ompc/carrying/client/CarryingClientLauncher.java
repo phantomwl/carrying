@@ -162,7 +162,7 @@ public class CarryingClientLauncher {
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
             option.sendBufferSize = CARRIER_NUM*4;
-            option.tcpNoDelay = true;
+            option.tcpNoDelay = false;
             option.receiveBufferSize = 1024*1024;
 //            option.sendBufferSize = 1024*1024;
             new CarryingClientLauncher(option);
