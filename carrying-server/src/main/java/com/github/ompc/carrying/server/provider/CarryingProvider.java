@@ -1,9 +1,9 @@
 package com.github.ompc.carrying.server.provider;
 
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
+import com.github.ompc.carrying.server.ServerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
-import static com.github.ompc.carrying.common.CarryingConstants.*;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -26,12 +25,14 @@ public class CarryingProvider {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Option option;                // 服务器启动选项
+    private final int serverPort;
+    private final ServerOption option;                // 服务器启动选项
     private final ExecutorService childPool;    // 客户端响应请求处理线程池
     private final ExecutorService businessPool; // 业务响应请求处理线程池
     private final CarryingProcess process;      // 搬运请求处理器
 
-    public CarryingProvider(Option option, ExecutorService clientPool, ExecutorService businessPool, CarryingProcess process) {
+    public CarryingProvider(int serverPort, ServerOption option, ExecutorService clientPool, ExecutorService businessPool, CarryingProcess process) {
+        this.serverPort = serverPort;
         this.option = option;
         this.childPool = clientPool;
         this.businessPool = businessPool;
@@ -52,11 +53,14 @@ public class CarryingProvider {
             while (true) {
 
                 final Socket socket = serverSocket.accept();
-                socket.setTcpNoDelay(option.childTcpNoDelay);
-                socket.setSendBufferSize(option.childSendBufferSize);
-                socket.setReceiveBufferSize(option.childReceiveBufferSize);
-//                socket.setPerformancePreferences(0,0,3);
-//                socket.setTrafficClass(255);
+                socket.setTcpNoDelay(option.isChildTcpNoDelay());
+                socket.setSendBufferSize(option.getChildSendBufferSize());
+                socket.setReceiveBufferSize(option.getChildReceiveBufferSize());
+                socket.setPerformancePreferences(
+                        option.getChildPps()[0],
+                        option.getChildPps()[1],
+                        option.getChildPps()[2]);
+                socket.setTrafficClass(option.getChildTrafficClass());
 
                 childPool.execute(new Runnable() {
 
@@ -69,7 +73,7 @@ public class CarryingProvider {
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
                             final DataOutputStream dos =
 //                                    new DataOutputStream(socket.getOutputStream());
-                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.childSendBufferSize, 20));
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.getChildCorkBufferSize(), option.getChildCorkFlushTimes()));
 
                             while (socket.isConnected()) {
 
@@ -128,11 +132,9 @@ public class CarryingProvider {
 
     private ServerSocket newServerSocket() throws IOException {
 
-        final ServerSocket serverSocket = new ServerSocket(option.serverPort);
+        final ServerSocket serverSocket = new ServerSocket(serverPort);
         serverSocket.setReuseAddress(true);
-//        serverSocket.setPerformancePreferences(0, 0, 3);
-//        serverSocket.setReceiveBufferSize(option.receiveBufferSize);
-        logger.info("CarryingProvider start successed, port={}", option.serverPort);
+        logger.info("CarryingProvider start successed, port={}",serverPort);
 
         // 注册关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread("CarryingProvider-Shutdown-Hook"){
@@ -140,48 +142,11 @@ public class CarryingProvider {
             @Override
             public void run() {
                 closeQuietly(serverSocket);
-                logger.info("CarryingProvider shutdown successed, port={}", option.serverPort);
+                logger.info("CarryingProvider shutdown successed, port={}", serverPort);
             }
         });
 
         return serverSocket;
-
-    }
-
-    /**
-     * 服务器启动选项
-     */
-    public static class Option {
-
-        /**
-         * 服务器启动端口
-         */
-        public int serverPort = 8787;
-
-        /**
-         * TCP通讯超时(ms)
-         */
-        public int socketTimeout = 60000;
-
-        /**
-         * 接收数据缓存大小(B)
-         */
-        public int receiveBufferSize = 8192;
-
-        /**
-         * SOCKET是否启用Nagle
-         */
-        public boolean childTcpNoDelay = false;
-
-        /**
-         * SOCKET接收缓存大小
-         */
-        public int childReceiveBufferSize = 8192;
-
-        /**
-         * SOCKET发送缓存大小
-         */
-        public int childSendBufferSize = 8192;
 
     }
 

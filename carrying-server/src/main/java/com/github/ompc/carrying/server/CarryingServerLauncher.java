@@ -23,24 +23,17 @@ public class CarryingServerLauncher {
 
     public static void main(String... args) throws IOException {
 
-//        args = new String[]{"/Users/vlinux/1G.txt","8787"};
-
-        final CarryingProvider.Option option = new CarryingProvider.Option();
-        option.serverPort = Integer.valueOf(args[1]);
-        option.childTcpNoDelay = true;
-        option.childReceiveBufferSize = CORK_BUFFER_SIZE;
-        option.childSendBufferSize = CORK_BUFFER_SIZE;
+        final ServerOption serverOption = new ServerOption(args[2]);
+        final int serverPort = Integer.valueOf(args[1]);
 
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(getRuntime().availableProcessors()*20);
 
-        final RowDataSource rowDataSource
-                = new DefaultRowDataSource(args[0]);
-//                = new DummyRowDataSource();
-        final RowCache rowCache = new DefaultRowCache();
-        final CarryingServerProcess process = new CarryingServerProcess(rowDataSource, rowCache);
+        final CarryingServerProcess process = new CarryingServerProcess(
+                new DefaultRowDataSource(args[0]),
+                new DefaultRowCache());
 
-        final CarryingProvider carryingProvider = new CarryingProvider(option,pool,businessPool,process);
+        final CarryingProvider carryingProvider = new CarryingProvider(serverPort,serverOption,pool,businessPool,process);
         carryingProvider.startup();
 
     }

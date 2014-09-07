@@ -16,8 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
-import static java.lang.Runtime.getRuntime;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -26,15 +24,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public class CarryingClientLauncher {
 
-    private static final int CPU_NUM = getRuntime().availableProcessors();
-    private static final int CLI_NUM = 2;//CPU_NUM;
-    private static final int CARRIER_NUM = CPU_NUM * 10;
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
-    private final CarryingConsumer[] consumers = new CarryingConsumer[CLI_NUM];
     private final AtomicInteger carrierIndex = new AtomicInteger(0);
-    private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
+
+    private final int CLI_NUM;
+    private final int CARRIER_NUM;
+    private final CarryingConsumer[] consumers;
+    private final CountDownLatch countDown;
 
     /**
      * 搬运工
@@ -48,16 +45,16 @@ public class CarryingClientLauncher {
         public void run() {
 
             final int index = carrierIndex.getAndIncrement();
-            final CarryingConsumer consumer = consumers[index%CLI_NUM];
+            final CarryingConsumer consumer = consumers[index % CLI_NUM];
             final ReentrantLock lock = new ReentrantLock();
             final Condition condition = lock.newCondition();
 
-            Thread.currentThread().setName("CarryingConsumer-Carrier-"+index);
+            Thread.currentThread().setName("CarryingConsumer-Carrier-" + index);
             logger.info("{} was started.", Thread.currentThread().getName());
 
             int cursor = 0;
             boolean isReTry = false;
-            while( isRunning ) {
+            while (isRunning) {
 
                 final CarryingRequest request = new CarryingRequest(cursor, isReTry, index);
                 try {
@@ -86,12 +83,12 @@ public class CarryingClientLauncher {
                         lock.unlock();
                     }//try
 
-                    if( null == response ) {
+                    if (null == response) {
                         logger.info("request={} timeout, need retry!", request.getSequence());
                         continue;
                     }
 
-                    if( response.isEOF() ) {
+                    if (response.isEOF()) {
                         Carrier.this.isRunning = false;
                     } else {
                         // TODO write to file.
@@ -102,8 +99,8 @@ public class CarryingClientLauncher {
                     response = null;
                     cursor++;
                 } catch (IOException e) {
-                   logger.warn("consumer={} send request={} failed, need retry!",
-                           new Object[]{index, request.getSequence()}, e);
+                    logger.warn("consumer={} send request={} failed, need retry!",
+                            new Object[]{index, request.getSequence()}, e);
                     isReTry = true;
                     continue;
                 }//try
@@ -115,12 +112,19 @@ public class CarryingClientLauncher {
 
         }
 
-    };
+    }
 
-    private CarryingClientLauncher(CarryingConsumer.Option option) throws IOException, InterruptedException {
+
+    private CarryingClientLauncher(InetSocketAddress address, ClientOption option) throws IOException, InterruptedException {
+
+        CLI_NUM = option.getConsumerNumbers();
+        CARRIER_NUM = option.getCarrierNumbers();
+
+        consumers = new CarryingConsumer[CLI_NUM];
+        countDown = new CountDownLatch(CARRIER_NUM);
 
         // 初始化Consumer池
-        initConsumers(option);
+        initConsumers(address, option);
 
         // 初始化搬运工
         initCarriers();
@@ -131,16 +135,18 @@ public class CarryingClientLauncher {
 
     /**
      * 初始化Consumer池
+     *
+     * @param serverAddress
      * @param option
      * @throws IOException
      */
-    private void initConsumers(CarryingConsumer.Option option) throws IOException {
-        for( int index=0; index<CLI_NUM; index++ ) {
-            final CarryingConsumer consumer = new CarryingConsumer(option, pool);
+    private void initConsumers(InetSocketAddress serverAddress, ClientOption option) throws IOException {
+        for (int index = 0; index < CLI_NUM; index++) {
+            final CarryingConsumer consumer = new CarryingConsumer(serverAddress, option, pool);
             consumers[index] = consumer;
             consumer.connect();
         }
-        logger.info("init consumers finished. count={}",CLI_NUM);
+        logger.info("init consumers finished. count={}", CLI_NUM);
     }
 
     /**
@@ -148,7 +154,7 @@ public class CarryingClientLauncher {
      */
     private void initCarriers() {
 
-        for( int i=0;i<CARRIER_NUM;i++ ) {
+        for (int i = 0; i < CARRIER_NUM; i++) {
             new Thread(new Carrier()).start();
         }
 
@@ -157,29 +163,19 @@ public class CarryingClientLauncher {
 
     public static void main(String... args) throws IOException, InterruptedException {
 
-//        args = new String[]{"127.0.0.1", "8787"};
         final long startTime = System.currentTimeMillis();
+        final ClientOption clientOption = new ClientOption(args[3]);
+
         try {
-            final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
-            final CarryingConsumer.Option option = new CarryingConsumer.Option();
-            option.serverAddress = address;
-            option.tcpNoDelay = true;
-            option.sendBufferSize =
-                    //CARRIER_NUM * 8 * 2;
-                    CORK_BUFFER_SIZE;
-            option.receiveBufferSize =
-                    //1024*212*0xFF;
-                    CORK_BUFFER_SIZE;
-//            option.sendBufferSize = 1024*1024;
-            new CarryingClientLauncher(option);
+            final InetSocketAddress serverAddress = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
+            new CarryingClientLauncher(serverAddress, clientOption);
         } finally {
 
             final long finishTime = System.currentTimeMillis();
-            System.out.println( finishTime - startTime );
+            System.out.println(finishTime - startTime);
             System.exit(0);
 
         }
-
 
 
     }
