@@ -172,7 +172,7 @@ public class CarryingConsumer {
             synchronized (dos) {
                 dos.writeInt(request.getSequence());
             }//sync
-            dos.flush();
+//            dos.flush();
         } catch (IOException ioException) {
 
             // 遇到网络异常则主动移除监听器
