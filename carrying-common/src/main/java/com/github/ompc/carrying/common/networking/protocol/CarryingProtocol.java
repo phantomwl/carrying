@@ -15,7 +15,7 @@ public abstract class CarryingProtocol {
         this.sequence = sequence;
     }
 
-    public int getSequence() {
+    public final int getSequence() {
         return sequence;
     }
 

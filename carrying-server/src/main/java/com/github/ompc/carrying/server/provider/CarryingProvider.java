@@ -81,7 +81,7 @@ public class CarryingProvider {
                                             final CarryingResponse response = process.process(request);
                                             synchronized (dos) {
                                                 dos.writeInt(response.getSequence());
-                                                dos.writeLong(response.getLineNumber());
+                                                dos.writeInt(response.getLineNumber());
                                                 dos.writeInt(response.getDataLength());
                                                 dos.write(response.getData());
                                             }

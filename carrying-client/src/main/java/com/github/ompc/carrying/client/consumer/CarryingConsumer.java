@@ -87,7 +87,7 @@ public class CarryingConsumer {
                     try {
 
                         final int sequence = dis.readInt();
-                        final long lineNumber = dis.readLong();
+                        final int lineNumber = dis.readInt();
                         final int length = dis.readInt();
                         final byte[] data = new byte[length];
                         dis.read(data);

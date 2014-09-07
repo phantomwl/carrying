@@ -10,7 +10,7 @@ public final class CarryingResponse extends CarryingProtocol {
      * 行号<br/>
      * 当值为-1时，说明到达EOF
      */
-    private final long lineNumber;
+    private final int lineNumber;
 
     /**
      * 行数据
@@ -24,7 +24,7 @@ public final class CarryingResponse extends CarryingProtocol {
      * @param lineNumber 行号
      * @param data       行数据
      */
-    public CarryingResponse(int sequence, long lineNumber, byte[] data) {
+    public CarryingResponse(int sequence, int lineNumber, byte[] data) {
         super(sequence);
         this.lineNumber = lineNumber;
         this.data = data;
@@ -35,7 +35,7 @@ public final class CarryingResponse extends CarryingProtocol {
      *
      * @return 行号
      */
-    public long getLineNumber() {
+    public int getLineNumber() {
         return lineNumber;
     }
 
