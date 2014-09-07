@@ -20,10 +20,13 @@ import static java.lang.System.arraycopy;
 public class CarryingServerProcess implements CarryingProcess {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final ServerOption serverOption;
     private final RowDataSource rowDataSource;
     private final RowCache rowCache;
 
-    public CarryingServerProcess(RowDataSource rowDataSource, RowCache rowCache) {
+    public CarryingServerProcess(ServerOption serverOption, RowDataSource rowDataSource, RowCache rowCache) {
+        this.serverOption = serverOption;
         this.rowDataSource = rowDataSource;
         this.rowCache = rowCache;
     }
@@ -37,7 +40,8 @@ public class CarryingServerProcess implements CarryingProcess {
         try {
 
             Row row;
-            if( isReTry ) {
+            if( isReTry
+                    && serverOption.isCacheEnable()) {
                 row = rowCache.getRow(index);
                 if( null != row ) {
                     return newResponse(request, row);
@@ -89,7 +93,9 @@ public class CarryingServerProcess implements CarryingProcess {
      * @param row
      */
     private void putCache(int token, Row row) {
-        rowCache.putRow(token, row);
+        if( serverOption.isCacheEnable() ) {
+            rowCache.putRow(token, row);
+        }
     }
 
     /**

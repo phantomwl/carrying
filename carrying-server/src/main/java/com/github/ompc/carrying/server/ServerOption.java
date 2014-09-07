@@ -22,6 +22,8 @@ public final class ServerOption {
     private int childCorkFlushTimes;
     private int childCorkBufferSize;
     private boolean childCorkAutoFlush;
+    private boolean cacheEnable;
+    private boolean dummyDataSourceEnable;
 
     public ServerOption(String propertiesFilepath) throws IOException {
 
@@ -46,6 +48,8 @@ public final class ServerOption {
         childCorkBufferSize = Integer.valueOf(properties.getProperty("server.child_cork_buffer_size"));
 
         childCorkAutoFlush = Boolean.valueOf(properties.getProperty("server.child_cork_auto_flush"));
+        cacheEnable = Boolean.valueOf(properties.getProperty("server.cache.enable"));
+        dummyDataSourceEnable = Boolean.valueOf(properties.getProperty("server.dummy_data_source.enable"));
 
     }
 
@@ -127,5 +131,21 @@ public final class ServerOption {
 
     public void setChildCorkAutoFlush(boolean childCorkAutoFlush) {
         this.childCorkAutoFlush = childCorkAutoFlush;
+    }
+
+    public boolean isCacheEnable() {
+        return cacheEnable;
+    }
+
+    public void setCacheEnable(boolean cacheEnable) {
+        this.cacheEnable = cacheEnable;
+    }
+
+    public boolean isDummyDataSourceEnable() {
+        return dummyDataSourceEnable;
+    }
+
+    public void setDummyDataSourceEnable(boolean dummyDataSourceEnable) {
+        this.dummyDataSourceEnable = dummyDataSourceEnable;
     }
 }

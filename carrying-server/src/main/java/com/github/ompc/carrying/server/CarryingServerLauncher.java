@@ -2,13 +2,12 @@ package com.github.ompc.carrying.server;
 
 import com.github.ompc.carrying.server.cache.DefaultRowCache;
 import com.github.ompc.carrying.server.datasource.DefaultRowDataSource;
+import com.github.ompc.carrying.server.datasource.DummyRowDataSource;
 import com.github.ompc.carrying.server.provider.CarryingProvider;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static java.lang.Runtime.getRuntime;
 
 /**
  * 搬运服务启动器
@@ -22,13 +21,16 @@ public class CarryingServerLauncher {
         final int serverPort = Integer.valueOf(args[1]);
 
         final ExecutorService pool = Executors.newCachedThreadPool();
-        final ExecutorService businessPool = Executors.newFixedThreadPool(getRuntime().availableProcessors()*20);
+        final ExecutorService businessPool = Executors.newFixedThreadPool(serverOption.getBusinessWorksNumbers());
 
         final CarryingServerProcess process = new CarryingServerProcess(
-                new DefaultRowDataSource(args[0]),
+                serverOption,
+                serverOption.isDummyDataSourceEnable()
+                    ? new DummyRowDataSource()
+                    : new DefaultRowDataSource(args[0]),
                 new DefaultRowCache());
 
-        final CarryingProvider carryingProvider = new CarryingProvider(serverPort,serverOption,pool,businessPool,process);
+        final CarryingProvider carryingProvider = new CarryingProvider(serverPort, serverOption, pool, businessPool, process);
         carryingProvider.startup();
 
     }
