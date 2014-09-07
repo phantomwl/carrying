@@ -68,7 +68,8 @@ public class CarryingConsumer {
         socket.setTrafficClass(255);
         socket.connect(option.serverAddress);
         dis = new DataInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
+//        dos = new DataOutputStream(socket.getOutputStream());
+        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.sendBufferSize));
         logger.info("connect to server={} successed.", option.serverAddress);
     }
 
