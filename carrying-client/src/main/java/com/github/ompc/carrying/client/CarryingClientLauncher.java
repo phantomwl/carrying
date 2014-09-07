@@ -161,9 +161,9 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.sendBufferSize = CARRIER_NUM*8;
             option.tcpNoDelay = false;
-            option.receiveBufferSize = 1024*1024;
+            option.sendBufferSize = CARRIER_NUM * 4;
+            option.receiveBufferSize = CARRIER_NUM * 200;
 //            option.sendBufferSize = 1024*1024;
             new CarryingClientLauncher(option);
         } finally {
