@@ -1,6 +1,7 @@
 #!/bin/sh
 
 java \
+    -XX:+UseBiasedLocking\
     -Xmx4G \
     -Xms4G \
     -Xmn2G \
