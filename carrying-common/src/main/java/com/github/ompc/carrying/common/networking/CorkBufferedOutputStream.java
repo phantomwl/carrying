@@ -60,7 +60,11 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 
         };
         flusher.setDaemon(true);
-        flusher.start();
+
+        if( maxFlushTimes > 0 ) {
+            flusher.start();
+        }
+
     }
 
     @Override
