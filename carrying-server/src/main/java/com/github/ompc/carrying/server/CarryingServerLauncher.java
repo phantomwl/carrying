@@ -27,7 +27,7 @@ public class CarryingServerLauncher {
 
         final CarryingProvider.Option option = new CarryingProvider.Option();
         option.serverPort = Integer.valueOf(args[1]);
-        option.childTcpNoDelay = true;
+        option.childTcpNoDelay = false;
         option.childReceiveBufferSize = CORK_BUFFER_SIZE;
         option.childSendBufferSize = CORK_BUFFER_SIZE;
 

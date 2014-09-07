@@ -163,7 +163,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.tcpNoDelay = true;
+            option.tcpNoDelay = false;
             option.sendBufferSize =
                     //CARRIER_NUM * 8 * 2;
                     CORK_BUFFER_SIZE;
