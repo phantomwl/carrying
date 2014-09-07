@@ -69,7 +69,7 @@ public class CarryingConsumer {
         socket.connect(option.serverAddress);
         dis = new DataInputStream(socket.getInputStream());
 //        dos = new DataOutputStream(socket.getOutputStream());
-        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), TCP_MSS));
+        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.sendBufferSize, 10));
         logger.info("connect to server={} successed.", option.serverAddress);
     }
 

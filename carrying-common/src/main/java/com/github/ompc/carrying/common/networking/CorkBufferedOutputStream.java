@@ -19,14 +19,16 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-//    private int power;
-//
+    private static final int DEFAULT_MAX_FLUSH_TIMES = 8;
+
     private volatile boolean isNeedFlush = false;
     private volatile int flushTimes = 0;
-    private static final int MAX_FLUSH_TIMES = 8;
 
-    public CorkBufferedOutputStream(OutputStream out, int size) {
+    private int maxFlushTimes = DEFAULT_MAX_FLUSH_TIMES;
+
+    public CorkBufferedOutputStream(OutputStream out, int size, int maxFlushTimes) {
         super(out, size);
+        this.maxFlushTimes = maxFlushTimes;
         final Thread flusher = new Thread("CorkBufferedOutputStream-Flusher-Daemon") {
 
             @Override
@@ -93,7 +95,7 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 
         // 检查刷新次数
         if( isNeedFlush
-            || flushTimes++ >= MAX_FLUSH_TIMES  ) {
+            || flushTimes++ >= maxFlushTimes  ) {
             flushTimes = 0;
             isNeedFlush = false;
             super.flush();
