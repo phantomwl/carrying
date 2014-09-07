@@ -82,7 +82,10 @@ public class CarryingProvider {
                                             synchronized (dos) {
                                                 dos.writeInt(response.getSequence());
                                                 dos.writeInt(response.getLineNumber());
-                                                dos.writeInt(response.getDataLength());
+
+                                                // Hack for LINE.max <= 200B
+                                                dos.writeByte(response.getDataLength());
+
                                                 dos.write(response.getData());
                                             }
                                             dos.flush();

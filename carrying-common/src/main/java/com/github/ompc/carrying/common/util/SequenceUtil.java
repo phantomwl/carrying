@@ -1,5 +1,11 @@
 package com.github.ompc.carrying.common.util;
 
+import com.github.ompc.carrying.common.CarryingConstants;
+
+import static com.github.ompc.carrying.common.CarryingConstants.SEQ_INDEX_BITS;
+import static com.github.ompc.carrying.common.CarryingConstants.SEQ_INDEX_MASK;
+import static com.github.ompc.carrying.common.CarryingConstants.SEQ_IS_RETRY_MASK;
+
 /**
  * 序列号操作工具类
  * Created by oldmanpushcart@gmail.com on 14-9-7.
@@ -9,9 +15,9 @@ public final class SequenceUtil {
     /**
      * 生成序列号<br/>
      * 序列号生成规则如下为:
-     * |0x00000101~0xFFFFFFFF :(25b) INT
-     * |0x00000100~0x00000100 :(01b) IS_RE_TRY
-     * |0x00000000~0x000000FF :(08b) INDEX
+     * |0x00001001~0xFFFFFFFF :(21b) INT
+     * |0x00001000~0x00001000 :(01b) IS_RE_TRY
+     * |0x00000000~0x00000FFF :(10b) INDEX
      *
      * @param cursor  当前游标
      * @param isReTry 是否重试
@@ -19,7 +25,7 @@ public final class SequenceUtil {
      * @return 序列号
      */
     public final static int generateSequence(int cursor, boolean isReTry, int index) {
-        return cursor << 9 | index | (isReTry ? 0x0100 : 0x0000);
+        return cursor << SEQ_INDEX_BITS | index | (isReTry ? SEQ_IS_RETRY_MASK : 0x0000);
     }
 
     /**
@@ -29,7 +35,7 @@ public final class SequenceUtil {
      * @return 序列号所对应的下标
      */
     public final static int index(int sequence) {
-        return sequence & 0xff;
+        return sequence & SEQ_INDEX_MASK;
     }
 
     /**
@@ -39,22 +45,7 @@ public final class SequenceUtil {
      * @return
      */
     public final static boolean isReTry(int sequence) {
-        return (sequence & 0x0100) == 0x0100;
-    }
-
-    /**
-     * 将序列号标记为重试
-     * @param sequence
-     * @return
-     */
-    public final static int markReTry(int sequence) {
-        return sequence | 0x0100;
-    }
-
-    public static void main(String... args) {
-
-        System.out.println( generateSequence(0,false,0x01) );
-
+        return (sequence & CarryingConstants.SEQ_IS_RETRY_MASK) == SEQ_IS_RETRY_MASK;
     }
 
 }
