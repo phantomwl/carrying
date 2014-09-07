@@ -129,8 +129,7 @@ public class CarryingProvider {
                                             }
                                             dos.flush();
                                         } catch (Throwable throwable) {
-                                            logger.info("Child@Process client={};sequence={}; occur an error, ingore this request.",
-                                                    new Object[]{socket.getRemoteSocketAddress(), sequence}, throwable);
+                                            logger.info("Child@Process sequence={}; occur an error, ingore this request.", sequence, throwable);
                                         }//try
 
                                     }
