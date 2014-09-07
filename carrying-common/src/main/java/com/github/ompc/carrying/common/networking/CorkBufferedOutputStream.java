@@ -63,33 +63,6 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
         flusher.start();
     }
 
-//    /**
-//     * 检查size是否2的幂
-//     * @param size
-//     * @return
-//     */
-//    private boolean isPower(int size) {
-//        return (size & (size - 1)) == 0;
-//    }
-//
-//    /**
-//     * 计算size是2的几次方
-//     * @param size
-//     * @return
-//     */
-//    private int calPower(int size) {
-//        if( !isPower(size) ) {
-//            throw new IllegalArgumentException("size must be a POWER number");
-//        }
-//        int base = 1;
-//        for( int i=0; i<32; i++ ) {
-//            if( base << i == size ) {
-//                return i;
-//            }
-//        }//for
-//        return 0;
-//    }
-
     @Override
     public synchronized void flush() throws IOException {
 
@@ -100,14 +73,6 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
             isNeedFlush = false;
             super.flush();
         }
-
-//        // 检查刷新大小是否到达边界
-//        int flushSize = count >> power << power;
-//        if( flushSize > 0 ) {
-//            out.write(buf, 0, flushSize);
-//            out.flush();
-//            count -= flushSize;
-//        }
 
     }
 
