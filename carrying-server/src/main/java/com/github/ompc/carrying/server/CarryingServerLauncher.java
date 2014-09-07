@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.server;
 
+import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.server.datasource.DummyRowDataSource;
 import com.github.ompc.carrying.server.provider.CarryingProvider;
 import com.github.ompc.carrying.server.cache.DefaultRowCache;
@@ -10,6 +11,8 @@ import com.github.ompc.carrying.server.datasource.RowDataSource;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
 
 /**
  * 搬运服务启动器
@@ -24,10 +27,13 @@ public class CarryingServerLauncher {
         final CarryingProvider.Option option = new CarryingProvider.Option();
         option.serverPort = Integer.valueOf(args[1]);
         option.childTcpNoDelay = false;
-        option.childReceiveBufferSize = 1024*1024*4*0xFF;
+        option.childReceiveBufferSize =
+                //1024*1024*4*0xFF;
+                CORK_BUFFER_SIZE;
         option.childSendBufferSize =
                 // 1024*1024*4;
-                212*0xFF * 8 * 2;
+                //212*0xFF * 8 * 2;
+                CORK_BUFFER_SIZE;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
