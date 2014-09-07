@@ -111,9 +111,15 @@ public class CarryingConsumer {
 
                     } catch (IOException ioException) {
 
-                        // 如果此时发生了IO异常将无法修复，只能断开链接
-                        logger.info("Receiver read data failed. server={}, connection will be close.",
-                                option.serverAddress, ioException);
+                        if( socket.isConnected() ) {
+                            // 如果此时发生了IO异常将无法修复，只能断开链接
+                            logger.info("Receiver read data failed. server={}, connection will be close.",
+                                    option.serverAddress, ioException);
+                        } else {
+                            logger.info("Receiver read data failed. server={}, because connection was close.",
+                                    option.serverAddress);
+                        }//if
+
                         disconnect();
                         break;
 

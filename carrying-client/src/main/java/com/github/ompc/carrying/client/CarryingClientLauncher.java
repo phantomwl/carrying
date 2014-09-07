@@ -162,7 +162,7 @@ public class CarryingClientLauncher {
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
             option.tcpNoDelay = false;
-            option.sendBufferSize = CARRIER_NUM * 8;
+            option.sendBufferSize = CARRIER_NUM * 8 * 1024;
             option.receiveBufferSize = 1024*212*0xFF;
 //            option.sendBufferSize = 1024*1024;
             new CarryingClientLauncher(option);
@@ -170,6 +170,7 @@ public class CarryingClientLauncher {
 
             final long finishTime = System.currentTimeMillis();
             System.out.println( finishTime - startTime );
+            System.exit(0);
 
         }
 
