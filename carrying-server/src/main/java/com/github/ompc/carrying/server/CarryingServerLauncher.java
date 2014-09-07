@@ -32,8 +32,8 @@ public class CarryingServerLauncher {
         final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
 
         final RowDataSource rowDataSource
-//                = new DefaultRowDataSource(args[0]);
-                = new DummyRowDataSource();
+                = new DefaultRowDataSource(args[0]);
+//                = new DummyRowDataSource();
         final RowCache rowCache = new DefaultRowCache();
         final CarryingServerProcess process = new CarryingServerProcess(rowDataSource, rowCache);
 

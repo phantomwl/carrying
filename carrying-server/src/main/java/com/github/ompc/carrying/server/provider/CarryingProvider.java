@@ -85,7 +85,7 @@ public class CarryingProvider {
                                                 dos.writeInt(response.getDataLength());
                                                 dos.write(response.getData());
                                             }
-                                            dos.flush();
+//                                            dos.flush();
                                         } catch (Throwable throwable) {
                                             logger.info("Child@Process client={};sequence={}; occur an error, ingore this request.",
                                                     new Object[]{socket.getRemoteSocketAddress(), sequence}, throwable);
