@@ -2,7 +2,6 @@ package com.github.ompc.carrying.client;
 
 import com.github.ompc.carrying.client.consumer.CarryingConsumer;
 import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -164,7 +162,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.tcpNoDelay = false;
+            option.tcpNoDelay = true;
             option.sendBufferSize =
                     //CARRIER_NUM * 8 * 2;
                     CORK_BUFFER_SIZE;
