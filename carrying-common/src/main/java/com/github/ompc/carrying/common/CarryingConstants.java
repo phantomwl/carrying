@@ -15,21 +15,27 @@ public class CarryingConstants {
     /**
      * 序列号：是否重试标志位掩码
      */
-    public static final int SEQ_IS_RETRY_MASK = 0x400;
+    public static final int SEQ_IS_RETRY_MASK = 0x800;
 
     /**
      * 序列号：INDEX宽度
      */
-    public static final int SEQ_INDEX_BITS = 11;
+    public static final int SEQ_INDEX_BITS = 12;
 
     /**
      * 序列号：INDEX补码掩码
      */
-    public static final int SEQ_INDEX_MASK = 0x3FF;
+    public static final int SEQ_INDEX_MASK = 0x7FF;
 
     /**
      * 序列号最大值
      */
     public static final int SEQ_INDEX_MAX = SEQ_INDEX_MASK;
+
+    public static void main(String... args) {
+
+        System.out.println( 0x800 & 0x7FF );
+
+    }
 
 }
