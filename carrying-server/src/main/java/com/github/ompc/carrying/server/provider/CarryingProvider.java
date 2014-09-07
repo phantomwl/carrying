@@ -69,7 +69,7 @@ public class CarryingProvider {
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
                             final DataOutputStream dos =
 //                                    new DataOutputStream(socket.getOutputStream());
-                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), TCP_MSS, 8));
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), TCP_MSS, 20));
 
                             while (socket.isConnected()) {
 

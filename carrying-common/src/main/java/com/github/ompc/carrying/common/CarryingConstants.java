@@ -12,7 +12,7 @@ public class CarryingConstants {
     public static final int TCP_MTU = 1500;
     public static final int TCP_MSS = 1460;
 
-    public static final int CORK_BUFFER_SIZE = TCP_MSS * 1024 * 100;
+    public static final int CORK_BUFFER_SIZE = TCP_MSS * 1024;
 
     /**
      * 序列号：是否重试标志位掩码
