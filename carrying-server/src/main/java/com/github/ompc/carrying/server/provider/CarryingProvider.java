@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.server.provider;
 
+import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
@@ -14,7 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
-import static com.github.ompc.carrying.common.CarryingConstants.REQUEST_PADDING;
+import static com.github.ompc.carrying.common.CarryingConstants.TCP_MSS;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -66,13 +67,11 @@ public class CarryingProvider {
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
                             final DataOutputStream dos =
                                     //new DataOutputStream(socket.getOutputStream());
-                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(),option.childSendBufferSize));
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), TCP_MSS));
 
                             while (socket.isConnected()) {
 
                                 final int sequence = dis.readInt();
-                                dis.read(REQUEST_PADDING);
-
                                 businessPool.execute(new Runnable() {
 
                                     @Override

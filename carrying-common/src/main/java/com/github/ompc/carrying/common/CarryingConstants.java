@@ -34,9 +34,4 @@ public class CarryingConstants {
      */
     public static final int SEQ_INDEX_MAX = SEQ_INDEX_MASK;
 
-    /**
-     * 请求填充
-     */
-    public static final byte[] REQUEST_PADDING = new byte[]{0x00,0x00};
-
 }
