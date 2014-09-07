@@ -17,6 +17,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
+import static java.lang.Runtime.getRuntime;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -25,14 +26,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public class CarryingClientLauncher {
 
-    private static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
+    private static final int CPU_NUM = getRuntime().availableProcessors();
     private static final int CLI_NUM = CPU_NUM * 2;
     private static final int CARRIER_NUM = CLI_NUM * 10;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
     private final CarryingConsumer[] consumers = new CarryingConsumer[CLI_NUM];
-    private final AtomicInteger carrierIndex = new AtomicInteger();
+    private final AtomicInteger carrierIndex = new AtomicInteger(0);
     private CountDownLatch countDown = new CountDownLatch(CARRIER_NUM);
 
     /**
