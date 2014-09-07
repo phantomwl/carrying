@@ -44,6 +44,11 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
                         }//try
 
                         isNeedFlush = true;
+                        try {
+                            CorkBufferedOutputStream.this.flush();
+                        } catch (IOException ioException) {
+                            logger.warn("Flusher flush buffer failed.", ioException);
+                        }
 
                     } finally {
                         lock.unlock();
