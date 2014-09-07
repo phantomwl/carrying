@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
+import static java.lang.Runtime.getRuntime;
 
 /**
  * 搬运服务启动器
@@ -27,16 +28,11 @@ public class CarryingServerLauncher {
         final CarryingProvider.Option option = new CarryingProvider.Option();
         option.serverPort = Integer.valueOf(args[1]);
         option.childTcpNoDelay = false;
-        option.childReceiveBufferSize =
-                //1024*1024*4*0xFF;
-                CORK_BUFFER_SIZE;
-        option.childSendBufferSize =
-                // 1024*1024*4;
-                //212*0xFF * 8 * 2;
-                CORK_BUFFER_SIZE;
+        option.childReceiveBufferSize = CORK_BUFFER_SIZE;
+        option.childSendBufferSize = CORK_BUFFER_SIZE;
 
         final ExecutorService pool = Executors.newCachedThreadPool();
-        final ExecutorService businessPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*10);
+        final ExecutorService businessPool = Executors.newFixedThreadPool(getRuntime().availableProcessors()*20);
 
         final RowDataSource rowDataSource
                 = new DefaultRowDataSource(args[0]);

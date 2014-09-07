@@ -62,9 +62,9 @@ public class CarryingConsumer {
         socket.setTcpNoDelay(option.tcpNoDelay);
         socket.setReceiveBufferSize(option.receiveBufferSize);
         socket.setSendBufferSize(option.sendBufferSize);
-        socket.setPerformancePreferences(0, 0, 3);
+//        socket.setPerformancePreferences(0, 0, 3);
         socket.setSoTimeout(option.socketTimeout);
-        socket.setTrafficClass(255);
+//        socket.setTrafficClass(255);
         socket.connect(option.serverAddress);
         dis = new DataInputStream(socket.getInputStream());
 //        dos = new DataOutputStream(socket.getOutputStream());

@@ -53,7 +53,6 @@ public class CarryingProvider {
                 socket.setTcpNoDelay(option.childTcpNoDelay);
                 socket.setSendBufferSize(option.childSendBufferSize);
                 socket.setReceiveBufferSize(option.childReceiveBufferSize);
-                socket.setTrafficClass(255);
 
                 childPool.execute(new Runnable() {
 
@@ -127,8 +126,8 @@ public class CarryingProvider {
 
         final ServerSocket serverSocket = new ServerSocket(option.serverPort);
         serverSocket.setReuseAddress(true);
-        serverSocket.setPerformancePreferences(0, 0, 3);
-        serverSocket.setReceiveBufferSize(option.receiveBufferSize);
+//        serverSocket.setPerformancePreferences(0, 0, 3);
+//        serverSocket.setReceiveBufferSize(option.receiveBufferSize);
         logger.info("CarryingProvider start successed, port={}", option.serverPort);
 
         // 注册关闭钩子
