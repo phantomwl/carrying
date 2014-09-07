@@ -23,7 +23,7 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 //
     private volatile boolean isNeedFlush = false;
     private volatile int flushTimes = 0;
-    private static final int MAX_FLUSH_TIMES = 4;
+    private static final int MAX_FLUSH_TIMES = 8;
 
     public CorkBufferedOutputStream(OutputStream out, int size) {
         super(out, size);
