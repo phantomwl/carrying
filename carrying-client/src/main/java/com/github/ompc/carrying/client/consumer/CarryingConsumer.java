@@ -29,7 +29,7 @@ public class CarryingConsumer {
     private final Option option;
     private final ExecutorService pool;
     private final Map<Integer/*SEQ*/, CarryingResponseListener> listenerMap
-            = new ConcurrentHashMap<Integer, CarryingResponseListener>();
+            = new ConcurrentHashMap<Integer, CarryingResponseListener>(1024*1024*4);
 
     private Socket socket;
     private DataInputStream dis;
