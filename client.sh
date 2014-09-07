@@ -1,9 +1,6 @@
 #!/bin/sh
 
 java \
-    -XX:+UseBiasedLocking\
-    -XX:+UseSpinning\
-    -XX:PreBlockSpin=10\
     -Xmx4G \
     -Xms4G \
     -Xmn2G \
