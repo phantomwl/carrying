@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
+import static com.github.ompc.carrying.common.CarryingConstants.REQUEST_PADDING;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -70,6 +71,8 @@ public class CarryingProvider {
                             while (socket.isConnected()) {
 
                                 final int sequence = dis.readInt();
+                                dis.read(REQUEST_PADDING);
+
                                 businessPool.execute(new Runnable() {
 
                                     @Override

@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.client.consumer;
 
+import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
 import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
+import static com.github.ompc.carrying.common.CarryingConstants.REQUEST_PADDING;
+import static com.github.ompc.carrying.common.CarryingConstants.TCP_MSS;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -68,7 +71,7 @@ public class CarryingConsumer {
         socket.connect(option.serverAddress);
         dis = new DataInputStream(socket.getInputStream());
 //        dos = new DataOutputStream(socket.getOutputStream());
-        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.sendBufferSize));
+        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), TCP_MSS));
         logger.info("connect to server={} successed.", option.serverAddress);
     }
 
@@ -165,6 +168,7 @@ public class CarryingConsumer {
         try {
             synchronized (dos) {
                 dos.writeInt(request.getSequence());
+                dos.write(REQUEST_PADDING);
             }//sync
             dos.flush();
         } catch (IOException ioException) {
