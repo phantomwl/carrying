@@ -161,7 +161,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.sendBufferSize = CLI_NUM*4;
+            option.sendBufferSize = CARRIER_NUM*4;
             option.tcpNoDelay = true;
             option.receiveBufferSize = 1024*100;
 //            option.sendBufferSize = 1024*100;
