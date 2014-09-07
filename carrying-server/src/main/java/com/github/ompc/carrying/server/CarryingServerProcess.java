@@ -1,12 +1,11 @@
 package com.github.ompc.carrying.server;
 
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.domain.Row;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
-import com.github.ompc.carrying.server.provider.CarryingProcess;
 import com.github.ompc.carrying.server.cache.RowCache;
 import com.github.ompc.carrying.server.datasource.RowDataSource;
+import com.github.ompc.carrying.server.provider.CarryingProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

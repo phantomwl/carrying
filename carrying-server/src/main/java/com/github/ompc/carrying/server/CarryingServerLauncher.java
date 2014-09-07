@@ -1,18 +1,13 @@
 package com.github.ompc.carrying.server;
 
-import com.github.ompc.carrying.common.CarryingConstants;
-import com.github.ompc.carrying.server.datasource.DummyRowDataSource;
-import com.github.ompc.carrying.server.provider.CarryingProvider;
 import com.github.ompc.carrying.server.cache.DefaultRowCache;
-import com.github.ompc.carrying.server.cache.RowCache;
 import com.github.ompc.carrying.server.datasource.DefaultRowDataSource;
-import com.github.ompc.carrying.server.datasource.RowDataSource;
+import com.github.ompc.carrying.server.provider.CarryingProvider;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.github.ompc.carrying.common.CarryingConstants.CORK_BUFFER_SIZE;
 import static java.lang.Runtime.getRuntime;
 
 /**

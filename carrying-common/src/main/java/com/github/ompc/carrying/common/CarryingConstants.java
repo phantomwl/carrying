@@ -1,7 +1,5 @@
 package com.github.ompc.carrying.common;
 
-import static java.lang.Byte.valueOf;
-
 /**
  * 常量定义
 * Created by oldmanpushcart@gmail.com on 14-8-28.
@@ -17,17 +15,17 @@ public class CarryingConstants {
     /**
      * 序列号：是否重试标志位掩码
      */
-    public static final int SEQ_IS_RETRY_MASK = 0x200;
+    public static final int SEQ_IS_RETRY_MASK = 0x400;
 
     /**
      * 序列号：INDEX宽度
      */
-    public static final int SEQ_INDEX_BITS = 10;
+    public static final int SEQ_INDEX_BITS = 11;
 
     /**
      * 序列号：INDEX补码掩码
      */
-    public static final int SEQ_INDEX_MASK = 0x1FF;
+    public static final int SEQ_INDEX_MASK = 0x3FF;
 
     /**
      * 序列号最大值
