@@ -28,8 +28,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class CarryingClientLauncher {
 
     private static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
-    private static final int CLI_NUM = CPU_NUM * 4;
-    private static final int CARRIER_NUM = CLI_NUM * 5;
+    private static final int CLI_NUM = CPU_NUM * 2;
+    private static final int CARRIER_NUM = CLI_NUM * 10;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
