@@ -164,7 +164,7 @@ public class CarryingClientLauncher {
     public static void main(String... args) throws IOException, InterruptedException {
 
         final long startTime = System.currentTimeMillis();
-        final ClientOption clientOption = new ClientOption(args[3]);
+        final ClientOption clientOption = new ClientOption(args[2]);
 
         try {
             final InetSocketAddress serverAddress = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
