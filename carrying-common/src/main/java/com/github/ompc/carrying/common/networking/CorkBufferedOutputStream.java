@@ -16,6 +16,6 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 
     @Override
     public synchronized void flush() throws IOException {
-        //super.flush();
+        super.flush();
     }
 }
