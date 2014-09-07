@@ -25,10 +25,12 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
     private volatile int flushTimes = 0;
 
     private int maxFlushTimes = DEFAULT_MAX_FLUSH_TIMES;
+    private boolean isAutoFlush;
 
-    public CorkBufferedOutputStream(OutputStream out, int size, int maxFlushTimes) {
+    public CorkBufferedOutputStream(OutputStream out, int size, int maxFlushTimes, boolean isAutoFlush) {
         super(out, size);
         this.maxFlushTimes = maxFlushTimes;
+        this.isAutoFlush = isAutoFlush;
         final Thread flusher = new Thread("CorkBufferedOutputStream-Flusher-Daemon") {
 
             @Override
@@ -61,7 +63,8 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
         };
         flusher.setDaemon(true);
 
-        if( maxFlushTimes > 0 ) {
+        if( maxFlushTimes > 0
+                && isAutoFlush ) {
             flusher.start();
         }
 
@@ -70,12 +73,18 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
     @Override
     public synchronized void flush() throws IOException {
 
-        // 检查刷新次数
-        if( isNeedFlush
-            || flushTimes++ >= maxFlushTimes  ) {
-            flushTimes = 0;
+        if( isNeedFlush ) {
             isNeedFlush = false;
             super.flush();
+            return;
+        }
+
+        // 检查刷新次数
+        if( flushTimes++ >= maxFlushTimes  ) {
+            flushTimes = 0;
+            if( !isAutoFlush ) {
+                super.flush();
+            }
         }
 
     }

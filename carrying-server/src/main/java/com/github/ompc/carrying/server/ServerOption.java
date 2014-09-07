@@ -21,6 +21,7 @@ public final class ServerOption {
 
     private int childCorkFlushTimes;
     private int childCorkBufferSize;
+    private boolean childCorkAutoFlush;
 
     public ServerOption(String propertiesFilepath) throws IOException {
 
@@ -43,6 +44,8 @@ public final class ServerOption {
 
         childCorkFlushTimes = Integer.valueOf(properties.getProperty("server.child_cork_flush_times"));
         childCorkBufferSize = Integer.valueOf(properties.getProperty("server.child_cork_buffer_size"));
+
+        childCorkAutoFlush = Boolean.valueOf(properties.getProperty("server.child_cork_auto_flush"));
 
     }
 
@@ -116,5 +119,13 @@ public final class ServerOption {
 
     public void setChildCorkBufferSize(int childCorkBufferSize) {
         this.childCorkBufferSize = childCorkBufferSize;
+    }
+
+    public boolean isChildCorkAutoFlush() {
+        return childCorkAutoFlush;
+    }
+
+    public void setChildCorkAutoFlush(boolean childCorkAutoFlush) {
+        this.childCorkAutoFlush = childCorkAutoFlush;
     }
 }

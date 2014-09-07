@@ -23,6 +23,7 @@ public final class ClientOption {
     private int carrierNumbers;     // 搬运工数量(工作线程)
     private int corkFlushTimes;     // 刷新次数
     private int corkBufferSize;     // 刷新缓存大小
+    private boolean corkAutoFlush;  // 自动刷新
 
     public ClientOption(String propertiesFilepath) throws IOException {
 
@@ -44,6 +45,8 @@ public final class ClientOption {
         carrierNumbers = Integer.valueOf(properties.getProperty("client.carrier_numbers"));
         corkFlushTimes = Integer.valueOf(properties.getProperty("client.cork_flush_times"));
         corkBufferSize = Integer.valueOf(properties.getProperty("client.cork_buffer_size"));
+
+        corkAutoFlush = Boolean.valueOf(properties.getProperty("client.cork_auto_flush"));
 
     }
 
@@ -127,4 +130,11 @@ public final class ClientOption {
         this.corkBufferSize = corkBufferSize;
     }
 
+    public boolean isCorkAutoFlush() {
+        return corkAutoFlush;
+    }
+
+    public void setCorkAutoFlush(boolean corkAutoFlush) {
+        this.corkAutoFlush = corkAutoFlush;
+    }
 }

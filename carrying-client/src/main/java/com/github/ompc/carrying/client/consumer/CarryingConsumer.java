@@ -74,7 +74,7 @@ public class CarryingConsumer {
         socket.connect(serverAddress);
         dis = new DataInputStream(socket.getInputStream());
 //        dos = new DataOutputStream(socket.getOutputStream());
-        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.getCorkBufferSize(), option.getCorkFlushTimes()));
+        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.getCorkBufferSize(), option.getCorkFlushTimes(), option.isCorkAutoFlush()));
         logger.info("connect to server={} successed.", serverAddress);
     }
 
