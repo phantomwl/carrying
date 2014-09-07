@@ -1,6 +1,7 @@
 package com.github.ompc.carrying.common.networking;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -11,5 +12,10 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
 
     public CorkBufferedOutputStream(OutputStream out, int size) {
         super(out, size);
+    }
+
+    @Override
+    public synchronized void flush() throws IOException {
+        //super.flush();
     }
 }
