@@ -44,7 +44,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <!--<mainClass>com.github.ompc.nchat.NChatLauncher</mainClass>-->
+                                    <mainClass>com.github.ompc.carrying.server.CarryingServerLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -69,20 +69,8 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jopt-simple</groupId>
-            <artifactId>jopt-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -97,8 +85,8 @@
             <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 </project>
