@@ -55,8 +55,8 @@ public class CarryingProvider {
                 socket.setTcpNoDelay(option.childTcpNoDelay);
                 socket.setSendBufferSize(option.childSendBufferSize);
                 socket.setReceiveBufferSize(option.childReceiveBufferSize);
-                socket.setPerformancePreferences(0,0,3);
-                socket.setTrafficClass(255);
+//                socket.setPerformancePreferences(0,0,3);
+//                socket.setTrafficClass(255);
 
                 childPool.execute(new Runnable() {
 
@@ -121,7 +121,7 @@ public class CarryingProvider {
             }
 
         } catch (IOException ioException) {
-
+            logger.warn("server accept failed.", ioException);
         }
 
     }
