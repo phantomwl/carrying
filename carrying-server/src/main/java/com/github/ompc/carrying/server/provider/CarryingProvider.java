@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
-import static com.github.ompc.carrying.common.CarryingConstants.TCP_MSS;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -67,7 +66,7 @@ public class CarryingProvider {
                             final DataInputStream dis = new DataInputStream(socket.getInputStream());
                             final DataOutputStream dos =
 //                                    new DataOutputStream(socket.getOutputStream());
-                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.childSendBufferSize, 8));
+                                    new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), CarryingConstants.TCP_MSS, 8));
 
                             while (socket.isConnected()) {
 
