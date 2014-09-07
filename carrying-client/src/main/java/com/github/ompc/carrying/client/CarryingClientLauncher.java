@@ -29,7 +29,7 @@ public class CarryingClientLauncher {
 
     private static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
     private static final int CLI_NUM = CPU_NUM * 2;
-    private static final int CARRIER_NUM = CLI_NUM * 15;
+    private static final int CARRIER_NUM = CLI_NUM * 10;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService pool = Executors.newCachedThreadPool();
@@ -163,7 +163,7 @@ public class CarryingClientLauncher {
             final InetSocketAddress address = new InetSocketAddress(args[0], Integer.valueOf(args[1]));
             final CarryingConsumer.Option option = new CarryingConsumer.Option();
             option.serverAddress = address;
-            option.tcpNoDelay = false;
+            option.tcpNoDelay = true;
             option.sendBufferSize =
                     //CARRIER_NUM * 8 * 2;
                     CORK_BUFFER_SIZE;
