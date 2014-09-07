@@ -164,7 +164,7 @@ public class CarryingClientLauncher {
             option.sendBufferSize = CLI_NUM*4;
             option.tcpNoDelay = true;
             option.receiveBufferSize = 1024*100;
-            option.sendBufferSize = 1024*100;
+//            option.sendBufferSize = 1024*100;
             new CarryingClientLauncher(option);
         } finally {
 
