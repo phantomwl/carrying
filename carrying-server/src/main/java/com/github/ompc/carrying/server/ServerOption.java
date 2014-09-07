@@ -41,8 +41,8 @@ public final class ServerOption {
         childPps[2] = Integer.valueOf(ppsSplits[2]);
 
 
-        childCorkBufferSize = Integer.valueOf(properties.getProperty("server.child_cork_flush_times"));
-        childCorkFlushTimes = Integer.valueOf(properties.getProperty("server.child_cork_buffer_size"));
+        childCorkFlushTimes = Integer.valueOf(properties.getProperty("server.child_cork_flush_times"));
+        childCorkBufferSize = Integer.valueOf(properties.getProperty("server.child_cork_buffer_size"));
 
     }
 
