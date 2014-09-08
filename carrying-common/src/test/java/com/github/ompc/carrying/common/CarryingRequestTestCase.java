@@ -5,6 +5,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import static com.github.ompc.carrying.common.CarryingConstants.SEQ_INDEX_BITS;
+import static com.github.ompc.carrying.common.CarryingConstants.SEQ_RETRY_BITS;
 
 /**
  * 请求报文测试用例
@@ -23,7 +24,7 @@ public class CarryingRequestTestCase {
             final CarryingRequest request = new CarryingRequest(cursor, isReTry, index);
             Assert.assertFalse(request.isReTry());
             Assert.assertEquals(index, request.getIndex());
-            Assert.assertEquals(cursor, (request.getSequence()>> SEQ_INDEX_BITS));
+            Assert.assertEquals(cursor, (request.getCursor()));
 
         }
 

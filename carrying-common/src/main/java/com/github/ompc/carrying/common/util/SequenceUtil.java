@@ -23,7 +23,7 @@ public final class SequenceUtil {
      * @return 序列号
      */
     public final static int generateSequence(int cursor, boolean isReTry, int index) {
-        return cursor << SEQ_INDEX_BITS | index | (isReTry ? SEQ_IS_RETRY_MASK : 0x0000);
+        return (cursor << SEQ_INDEX_BITS << SEQ_RETRY_BITS) | index | (isReTry ? SEQ_IS_RETRY_MASK : 0x0);
     }
 
     /**
@@ -44,6 +44,15 @@ public final class SequenceUtil {
      */
     public final static boolean isReTry(int sequence) {
         return (sequence & CarryingConstants.SEQ_IS_RETRY_MASK) == SEQ_IS_RETRY_MASK;
+    }
+
+    /**
+     * 获取一个序列号的游标号
+     * @param sequence
+     * @return
+     */
+    public final static int cursor(int sequence) {
+        return sequence >> SEQ_RETRY_BITS >> SEQ_INDEX_BITS;
     }
 
 }

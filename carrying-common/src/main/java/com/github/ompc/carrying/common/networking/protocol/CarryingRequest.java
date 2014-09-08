@@ -2,8 +2,7 @@ package com.github.ompc.carrying.common.networking.protocol;
 
 import com.github.ompc.carrying.common.util.SequenceUtil;
 
-import static com.github.ompc.carrying.common.util.SequenceUtil.generateSequence;
-import static com.github.ompc.carrying.common.util.SequenceUtil.index;
+import static com.github.ompc.carrying.common.util.SequenceUtil.*;
 
 /**
  * 搬运请求报文
@@ -24,6 +23,7 @@ public final class CarryingRequest extends CarryingProtocol {
 
     /**
      * 创建搬运请求报文
+     *
      * @param sequence
      */
     public CarryingRequest(int sequence) {
@@ -46,6 +46,10 @@ public final class CarryingRequest extends CarryingProtocol {
      */
     public boolean isReTry() {
         return SequenceUtil.isReTry(getSequence());
+    }
+
+    public int getCursor() {
+        return cursor(getSequence());
     }
 
 }
