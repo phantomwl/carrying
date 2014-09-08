@@ -82,7 +82,7 @@ public class CarryingProvider {
                                 final int sequence = dis.readInt();
                                 businessPool.execute(new Runnable() {
 
-                                    private final byte[] buf = new byte[1024];
+//                                    private final byte[] buf = new byte[1024];
 
                                     @Override
                                     public void run() {
@@ -91,41 +91,36 @@ public class CarryingProvider {
                                         try {
                                             final CarryingResponse response = process.process(request);
 
-                                            int pos = 0;
-                                            final int sequence = response.getSequence();
-                                            final int lineNumber = response.getLineNumber();
-                                            final byte[] data = response.getData();
-
-                                            buf[pos++] = (byte)((sequence >>> 24)&0xFF);
-                                            buf[pos++] = (byte)((sequence >>> 16)&0xFF);
-                                            buf[pos++] = (byte)((sequence >>>  8)&0xFF);
-                                            buf[pos++] = (byte)((sequence >>>  0)&0xFF);
-
-                                            buf[pos++] = (byte)((lineNumber >>> 24)&0xFF);
-                                            buf[pos++] = (byte)((lineNumber >>> 16)&0xFF);
-                                            buf[pos++] = (byte)((lineNumber >>>  8)&0xFF);
-                                            buf[pos++] = (byte)((lineNumber >>>  0)&0xFF);
-
-                                            buf[pos++] = (byte)(response.getDataLength()&0xFF);
-                                            arraycopy(
-                                                    data, 0,
-                                                    buf, pos,
-                                                    data.length);
-                                            pos+=data.length;
+//                                            int pos = 0;
+//                                            final int sequence = response.getSequence();
+//                                            final int lineNumber = response.getLineNumber();
+//                                            final byte[] data = response.getData();
+//
+//                                            buf[pos++] = (byte)((sequence >>> 24)&0xFF);
+//                                            buf[pos++] = (byte)((sequence >>> 16)&0xFF);
+//                                            buf[pos++] = (byte)((sequence >>>  8)&0xFF);
+//                                            buf[pos++] = (byte)((sequence >>>  0)&0xFF);
+//
+//                                            buf[pos++] = (byte)((lineNumber >>> 24)&0xFF);
+//                                            buf[pos++] = (byte)((lineNumber >>> 16)&0xFF);
+//                                            buf[pos++] = (byte)((lineNumber >>>  8)&0xFF);
+//                                            buf[pos++] = (byte)((lineNumber >>>  0)&0xFF);
+//
+//                                            buf[pos++] = (byte)(response.getDataLength()&0xFF);
+//                                            arraycopy(
+//                                                    data, 0,
+//                                                    buf, pos,
+//                                                    data.length);
+//                                            pos+=data.length;
 
 
 
                                             synchronized (dos) {
-//                                                dos.writeInt(response.getSequence());
-//                                                dos.writeInt(response.getLineNumber());
-//
-//                                                // Hack for LINE.max <= 200B
-//                                                dos.writeByte(response.getDataLength());
-//
-//                                                dos.write(response.getData());
-
-                                                dos.write(buf, 0, pos);
-
+                                                dos.writeInt(response.getSequence());
+                                                dos.writeInt(response.getLineNumber());
+                                                dos.writeInt(response.getDataLength());
+                                                dos.write(response.getData());
+//                                                dos.write(buf, 0, pos);
                                             }
                                             dos.flush();
                                         } catch (Throwable throwable) {

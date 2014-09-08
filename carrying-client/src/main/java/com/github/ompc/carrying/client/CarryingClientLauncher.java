@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -49,8 +50,8 @@ public class CarryingClientLauncher {
             final ReentrantLock lock = new ReentrantLock();
             final Condition condition = lock.newCondition();
 
-            Thread.currentThread().setName("CarryingConsumer-Carrier-" + index);
-            logger.info("{} was started.", Thread.currentThread().getName());
+            currentThread().setName("CarryingConsumer-Carrier-" + index);
+            logger.info("{} was started.", currentThread().getName());
 
             int cursor = 0;
             boolean isReTry = false;
@@ -76,9 +77,8 @@ public class CarryingClientLauncher {
                     lock.lock();
                     try {
                         condition.await(500, MILLISECONDS);
-//                        condition.await();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        currentThread().interrupt();
                     } finally {
                         lock.unlock();
                     }//try
@@ -108,7 +108,7 @@ public class CarryingClientLauncher {
             }//while
 
             countDown.countDown();
-            logger.info("{} was finished.", Thread.currentThread().getName());
+            logger.info("{} was finished.", currentThread().getName());
 
         }
 
