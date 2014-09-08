@@ -83,6 +83,13 @@ public class CarryingClientLauncher {
                                 lock.unlock();
                             }//try
 
+                            // conver to row
+                            Row row = new Row();
+                            row.setLineNum(response.getLineNumber());
+                            row.setData(response.getData());
+                            BytesReverseUtil.reverse(row.getData());
+                            dataConsumerArrayManager.put(row);
+
                         }
                     });
 
@@ -103,13 +110,7 @@ public class CarryingClientLauncher {
                     if (response.isEOF()) {
                         Carrier.this.isRunning = false;
                     } else {
-                    	
-                    	// conver to row
-                    	Row row = new Row();
-                    	row.setLineNum(response.getLineNumber());
-                    	row.setData(response.getData());
-                    	BytesReverseUtil.reverse(row.getData());
-                    	dataConsumerArrayManager.put(row);
+                    	//do nothing
                     }
 
                     isReTry = false;
@@ -148,10 +149,10 @@ public class CarryingClientLauncher {
         // 初始化搬运工
         initCarriers(dataConsumerArrayManager);
 
+        countDown.await();
+
         // 砖头写入文件
         new MappedCarryingDataPersistenceDao(option, dataConsumerArrayManager).persistenceData();
-        
-        countDown.await();
 
     }
 
