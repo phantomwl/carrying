@@ -68,9 +68,9 @@ public class MappedCarryingDataPersistenceDao implements CarryingDataPersistence
 			}//for
 			
 			closeFileChannel();
-			
+
 			latch.countDown();
-			
+
 		}
 	};
 	

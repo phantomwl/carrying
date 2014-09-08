@@ -28,6 +28,7 @@ public final class ClientOption {
     private String dataFilePath;    // 文件位置
     private int dataArraySize;      // 存放砖头的每个数组大小
     private int mapBufferSize;      // 映射文件长度
+    private boolean dataWriteEnable;
 
 	public ClientOption(String propertiesFilepath) throws IOException {
 
@@ -55,6 +56,7 @@ public final class ClientOption {
         dataFilePath = properties.getProperty("client.data_file_path");
         dataArraySize = Integer.valueOf(properties.getProperty("client.data_array_size"));
         mapBufferSize = Integer.valueOf(properties.getProperty("client.map_buffer_size"));
+        dataWriteEnable = Boolean.valueOf(properties.getProperty("client.data_write_enable"));
     }
 	
 
@@ -169,4 +171,12 @@ public final class ClientOption {
 	public void setMapBufferSize(int mapBufferSize) {
 		this.mapBufferSize = mapBufferSize;
 	}
+
+    public boolean isDataWriteEnable() {
+        return dataWriteEnable;
+    }
+
+    public void setDataWriteEnable(boolean dataWriteEnable) {
+        this.dataWriteEnable = dataWriteEnable;
+    }
 }

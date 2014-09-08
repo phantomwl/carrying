@@ -15,7 +15,7 @@ public class CarryingConstants {
     /**
      * 序列号：INDEX宽度
      */
-    public static final int SEQ_INDEX_BITS = 14;
+    public static final int SEQ_INDEX_BITS = 13;
 
     /**
      * 序列号：RETRY宽度
@@ -30,7 +30,7 @@ public class CarryingConstants {
     /**
      * 序列号：INDEX补码掩码
      */
-    public static final int SEQ_INDEX_MASK = 16383;
+    public static final int SEQ_INDEX_MASK = 8191;
 
     /**
      * 序列号最大值
@@ -41,7 +41,7 @@ public class CarryingConstants {
 
         int c = 0;
 
-        for( int i=0;i<=13;i++ ) {
+        for( int i=0;i<=12;i++ ) {
             c += 1<<i;
         }
         System.out.println(c);

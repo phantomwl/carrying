@@ -31,6 +31,7 @@ public class CorkBufferedOutputStream extends BufferedOutputStream {
         super(out, size);
         this.maxFlushTimes = maxFlushTimes;
         this.isAutoFlush = isAutoFlush;
+
         final Thread flusher = new Thread("CorkBufferedOutputStream-Flusher-Daemon") {
 
             @Override

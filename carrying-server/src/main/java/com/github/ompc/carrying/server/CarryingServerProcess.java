@@ -68,7 +68,7 @@ public class CarryingServerProcess implements CarryingProcess {
             return newResponse(request, row);
         } catch (IOException ioException) {
             logger.warn("CarryingServerProcess@carry error, index={};isReTry={};",
-                    new Object[]{index, isReTry}, ioException);
+                    new Object[]{index, isReTry, ioException});
             throw ioException;
         }
     }
