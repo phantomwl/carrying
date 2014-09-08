@@ -53,7 +53,7 @@ public class DataConsumerArrayManager {
 		
 		DataConsumerArray dataConsumerArray = new DataConsumerArray(num,option.getDataArraySize());
 		
-		dataConsumerArrays.set(num, dataConsumerArray);
+		dataConsumerArrays.add(num, dataConsumerArray);
 		
 		consumerArrayStatus[num] = 2;//数组已创建
 	}

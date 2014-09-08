@@ -38,6 +38,7 @@ public class CarryingClientLauncher {
     private final int CARRIER_NUM;
     private final CarryingConsumer[] consumers;
     private final CountDownLatch countDown;
+    private final ClientOption option;
 
     private DataConsumerArrayManager dataConsumerArrayManager;
     
@@ -83,12 +84,14 @@ public class CarryingClientLauncher {
                                 lock.unlock();
                             }//try
 
-                            // conver to row
-                            Row row = new Row();
-                            row.setLineNum(response.getLineNumber());
-                            row.setData(response.getData());
-                            BytesReverseUtil.reverse(row.getData());
-                            dataConsumerArrayManager.put(row);
+                            if( option.isDataWriteEnable() ) {
+                                // conver to row
+                                Row row = new Row();
+                                row.setLineNum(response.getLineNumber());
+                                row.setData(response.getData());
+                                BytesReverseUtil.reverse(row.getData());
+                                dataConsumerArrayManager.put(row);
+                            }
 
                         }
                     });
@@ -135,6 +138,7 @@ public class CarryingClientLauncher {
 
     private CarryingClientLauncher(InetSocketAddress address, ClientOption option) throws IOException, InterruptedException {
 
+        this.option = option;
         CLI_NUM = option.getConsumerNumbers();
         CARRIER_NUM = option.getCarrierNumbers();
 
@@ -151,8 +155,11 @@ public class CarryingClientLauncher {
 
         countDown.await();
 
-        // 砖头写入文件
-        new MappedCarryingDataPersistenceDao(option, dataConsumerArrayManager).persistenceData();
+        if( option.isDataWriteEnable() ) {
+            // 砖头写入文件
+            new MappedCarryingDataPersistenceDao(option, dataConsumerArrayManager).persistenceData();
+        }
+
 
     }
 
