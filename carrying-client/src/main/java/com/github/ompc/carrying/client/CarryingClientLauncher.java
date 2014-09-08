@@ -1,7 +1,15 @@
 package com.github.ompc.carrying.client;
 
-import static java.lang.Thread.currentThread;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import com.github.ompc.carrying.client.array.DataConsumerArrayManager;
+import com.github.ompc.carrying.client.consumer.CarryingConsumer;
+import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
+import com.github.ompc.carrying.client.persistence.impl.MappedCarryingDataPersistenceDao;
+import com.github.ompc.carrying.client.util.BytesReverseUtil;
+import com.github.ompc.carrying.common.domain.Row;
+import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
+import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,17 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.github.ompc.carrying.client.array.DataConsumerArrayManager;
-import com.github.ompc.carrying.client.consumer.CarryingConsumer;
-import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
-import com.github.ompc.carrying.client.persistence.impl.MappedCarryingDataPersistenceDao;
-import com.github.ompc.carrying.client.util.BytesReverseUtil;
-import com.github.ompc.carrying.common.domain.Row;
-import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
-import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
+import static java.lang.Thread.currentThread;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * 搬运客户端启动器
@@ -41,7 +40,7 @@ public class CarryingClientLauncher {
     private final ClientOption option;
 
     private DataConsumerArrayManager dataConsumerArrayManager;
-    
+
     /**
      * 搬运工
      */
@@ -49,12 +48,7 @@ public class CarryingClientLauncher {
 
         private boolean isRunning = true;
         private CarryingResponse response;
-        private DataConsumerArrayManager dataConsumerArrayManager;
-        
-        Carrier(DataConsumerArrayManager dataConsumerArrayManager){
-        	this.dataConsumerArrayManager = dataConsumerArrayManager;
-        }
-        
+
         @Override
         public void run() {
 
@@ -84,7 +78,7 @@ public class CarryingClientLauncher {
                                 lock.unlock();
                             }//try
 
-                            if( option.isDataWriteEnable() ) {
+                            if (option.isDataWriteEnable()) {
                                 // conver to row
                                 Row row = new Row();
                                 row.setLineNum(response.getLineNumber());
@@ -113,7 +107,7 @@ public class CarryingClientLauncher {
                     if (response.isEOF()) {
                         Carrier.this.isRunning = false;
                     } else {
-                    	//do nothing
+                        //do nothing
                     }
 
                     isReTry = false;
@@ -132,7 +126,7 @@ public class CarryingClientLauncher {
             logger.info("{} was finished.", currentThread().getName());
 
         }
-        
+
     }
 
 
@@ -144,18 +138,21 @@ public class CarryingClientLauncher {
 
         consumers = new CarryingConsumer[CLI_NUM];
         countDown = new CountDownLatch(CARRIER_NUM);
-        
-        dataConsumerArrayManager = new DataConsumerArrayManager(option);
-        
+
+        if (option.isDataWriteEnable()) {
+            dataConsumerArrayManager = new DataConsumerArrayManager(option);
+        }
+
+
         // 初始化Consumer池
         initConsumers(address, option);
 
         // 初始化搬运工
-        initCarriers(dataConsumerArrayManager);
+        initCarriers();
 
         countDown.await();
 
-        if( option.isDataWriteEnable() ) {
+        if (option.isDataWriteEnable()) {
             // 砖头写入文件
             new MappedCarryingDataPersistenceDao(option, dataConsumerArrayManager).persistenceData();
         }
@@ -177,12 +174,12 @@ public class CarryingClientLauncher {
             consumer.connect();
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread("Consumer-Shutdown-Hook"){
+        Runtime.getRuntime().addShutdownHook(new Thread("Consumer-Shutdown-Hook") {
 
             @Override
             public void run() {
-                for( CarryingConsumer consumer : consumers ) {
-                    if( null != consumer
+                for (CarryingConsumer consumer : consumers) {
+                    if (null != consumer
                             && consumer.isConnected()) {
                         consumer.disconnect();
                     }
@@ -196,10 +193,10 @@ public class CarryingClientLauncher {
     /**
      * 初始化搬运工
      */
-    private void initCarriers(DataConsumerArrayManager dataConsumerArrayManager) {
-    	
+    private void initCarriers() {
+
         for (int i = 0; i < CARRIER_NUM; i++) {
-            new Thread(new Carrier(dataConsumerArrayManager)).start();
+            new Thread(new Carrier()).start();
         }
 
     }
