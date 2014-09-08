@@ -1,5 +1,6 @@
 package com.github.ompc.carrying.client.consumer;
 
+import com.github.ompc.carrying.client.ClientOption;
 import com.github.ompc.carrying.common.networking.CorkBufferedOutputStream;
 import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
 import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
@@ -16,7 +17,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
-import static com.github.ompc.carrying.common.CarryingConstants.TCP_MSS;
 import static com.github.ompc.carrying.common.util.SocketUtil.closeQuietly;
 
 /**
@@ -27,7 +27,8 @@ public class CarryingConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Option option;
+    private final InetSocketAddress serverAddress;
+    private final ClientOption option;
     private final ExecutorService pool;
     private final Map<Integer/*SEQ*/, CarryingResponseListener> listenerMap
             = new ConcurrentHashMap<Integer, CarryingResponseListener>(1024*1024*4);
@@ -36,7 +37,8 @@ public class CarryingConsumer {
     private DataInputStream dis;
     private DataOutputStream dos;
 
-    public CarryingConsumer(Option option, ExecutorService pool) {
+    public CarryingConsumer(InetSocketAddress serverAddress, ClientOption option, ExecutorService pool) {
+        this.serverAddress = serverAddress;
         this.option = option;
         this.pool = pool;
     }
@@ -60,17 +62,20 @@ public class CarryingConsumer {
      */
     private void initSocket() throws IOException {
         socket = new Socket();
-        socket.setTcpNoDelay(option.tcpNoDelay);
-        socket.setReceiveBufferSize(option.receiveBufferSize);
-        socket.setSendBufferSize(option.sendBufferSize);
-//        socket.setPerformancePreferences(0, 0, 3);
-        socket.setSoTimeout(option.socketTimeout);
-//        socket.setTrafficClass(255);
-        socket.connect(option.serverAddress);
+        socket.setTcpNoDelay(option.isTcpNoDelay());
+        socket.setReceiveBufferSize(option.getReceiveBufferSize());
+        socket.setSendBufferSize(option.getSendBufferSize());
+        socket.setSoTimeout(option.getSocketTimeout());
+
+        // 待观察确认选项
+        socket.setPerformancePreferences(option.getPps()[0],option.getPps()[1],option.getPps()[2]);
+        socket.setTrafficClass(option.getTrafficClass());
+
+        socket.connect(serverAddress);
         dis = new DataInputStream(socket.getInputStream());
 //        dos = new DataOutputStream(socket.getOutputStream());
-        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.sendBufferSize, 20));
-        logger.info("connect to server={} successed.", option.serverAddress);
+        dos = new DataOutputStream(new CorkBufferedOutputStream(socket.getOutputStream(), option.getCorkBufferSize(), option.getCorkFlushTimes(), option.isCorkAutoFlush()));
+        logger.info("connect to server={} successed.", serverAddress);
     }
 
     /**
@@ -89,7 +94,7 @@ public class CarryingConsumer {
 
                         final int sequence = dis.readInt();
                         final int lineNumber = dis.readInt();
-                        final int length = dis.readByte() & 0xFF;
+                        final int length = dis.readInt();
                         final byte[] data = new byte[length];
                         dis.read(data);
 
@@ -115,10 +120,10 @@ public class CarryingConsumer {
                         if( socket.isConnected() ) {
                             // 如果此时发生了IO异常将无法修复，只能断开链接
                             logger.info("Receiver read data failed. server={}, connection will be close.",
-                                    option.serverAddress, ioException);
+                                    serverAddress, ioException);
                         } else {
                             logger.info("Receiver read data failed. server={}, because connection was close.",
-                                    option.serverAddress);
+                                    serverAddress);
                         }//if
 
                         disconnect();
@@ -176,38 +181,6 @@ public class CarryingConsumer {
             throw ioException;
 
         }//try
-
-    }
-
-    /**
-     * 客户端启动选项
-     */
-    public static class Option {
-
-        /**
-         * 服务器地址
-         */
-        public InetSocketAddress serverAddress;
-
-        /**
-         * TCP通讯超时(ms)
-         */
-        public int socketTimeout = 60000;
-
-        /**
-         * 接收数据缓存大小(B)
-         */
-        public int receiveBufferSize = 8192;
-
-        /**
-         * 发送数据缓存大小(B)
-         */
-        public int sendBufferSize = 8192;
-
-        /**
-         * SOCKET是否启用Nagle
-         */
-        public boolean tcpNoDelay = false;
 
     }
 

@@ -1,7 +1,5 @@
 package com.github.ompc.carrying.common.domain;
 
-import java.io.Serializable;
-
 /**
  * 行数据
  * Created by vlinux on 14-9-1.

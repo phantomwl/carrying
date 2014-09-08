@@ -2,9 +2,7 @@ package com.github.ompc.carrying.common.util;
 
 import com.github.ompc.carrying.common.CarryingConstants;
 
-import static com.github.ompc.carrying.common.CarryingConstants.SEQ_INDEX_BITS;
-import static com.github.ompc.carrying.common.CarryingConstants.SEQ_INDEX_MASK;
-import static com.github.ompc.carrying.common.CarryingConstants.SEQ_IS_RETRY_MASK;
+import static com.github.ompc.carrying.common.CarryingConstants.*;
 
 /**
  * 序列号操作工具类

@@ -1,6 +1,5 @@
 package com.github.ompc.carrying.server.cache;
 
-import com.github.ompc.carrying.common.CarryingConstants;
 import com.github.ompc.carrying.common.domain.Row;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
