@@ -24,8 +24,12 @@ public final class ClientOption {
     private int corkFlushTimes;     // 刷新次数
     private int corkBufferSize;     // 刷新缓存大小
     private boolean corkAutoFlush;  // 自动刷新
+    
+    private String dataFilePath;    // 文件位置
+    private int dataArraySize;      // 存放砖头的每个数组大小
+    private int mapBufferSize;      // 映射文件长度
 
-    public ClientOption(String propertiesFilepath) throws IOException {
+	public ClientOption(String propertiesFilepath) throws IOException {
 
         final Properties properties = new Properties();
         properties.load(new FileInputStream(new File(propertiesFilepath)));
@@ -48,9 +52,29 @@ public final class ClientOption {
 
         corkAutoFlush = Boolean.valueOf(properties.getProperty("client.cork_auto_flush"));
 
+        dataFilePath = properties.getProperty("client.data_file_path");
+        dataArraySize = Integer.valueOf(properties.getProperty("client.data_array_size"));
+        mapBufferSize = Integer.valueOf(properties.getProperty("client.map_buffer_size"));
     }
+	
 
-    public int getSocketTimeout() {
+    public int getDataArraySize() {
+		return dataArraySize;
+	}
+
+	public void setDataArraySize(int dataArraySize) {
+		this.dataArraySize = dataArraySize;
+	}
+	
+    public String getDataFilePath() {
+		return dataFilePath;
+	}
+
+	public void setDataFilePath(String dataFilePath) {
+		this.dataFilePath = dataFilePath;
+	}
+
+	public int getSocketTimeout() {
         return socketTimeout;
     }
 
@@ -137,4 +161,12 @@ public final class ClientOption {
     public void setCorkAutoFlush(boolean corkAutoFlush) {
         this.corkAutoFlush = corkAutoFlush;
     }
+    
+	public int getMapBufferSize() {
+		return mapBufferSize;
+	}
+
+	public void setMapBufferSize(int mapBufferSize) {
+		this.mapBufferSize = mapBufferSize;
+	}
 }

@@ -1,11 +1,7 @@
 package com.github.ompc.carrying.client;
 
-import com.github.ompc.carrying.client.consumer.CarryingConsumer;
-import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
-import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
-import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.Thread.currentThread;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,8 +12,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.lang.Thread.currentThread;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.ompc.carrying.client.array.DataConsumerArrayManager;
+import com.github.ompc.carrying.client.consumer.CarryingConsumer;
+import com.github.ompc.carrying.client.consumer.CarryingResponseListener;
+import com.github.ompc.carrying.client.persistence.impl.MappedCarryingDataPersistenceDao;
+import com.github.ompc.carrying.client.util.BytesReverseUtil;
+import com.github.ompc.carrying.common.domain.Row;
+import com.github.ompc.carrying.common.networking.protocol.CarryingRequest;
+import com.github.ompc.carrying.common.networking.protocol.CarryingResponse;
 
 /**
  * 搬运客户端启动器
@@ -34,6 +39,8 @@ public class CarryingClientLauncher {
     private final CarryingConsumer[] consumers;
     private final CountDownLatch countDown;
 
+    private DataConsumerArrayManager dataConsumerArrayManager;
+    
     /**
      * 搬运工
      */
@@ -41,7 +48,12 @@ public class CarryingClientLauncher {
 
         private boolean isRunning = true;
         private CarryingResponse response;
-
+        private DataConsumerArrayManager dataConsumerArrayManager;
+        
+        Carrier(DataConsumerArrayManager dataConsumerArrayManager){
+        	this.dataConsumerArrayManager = dataConsumerArrayManager;
+        }
+        
         @Override
         public void run() {
 
@@ -91,8 +103,13 @@ public class CarryingClientLauncher {
                     if (response.isEOF()) {
                         Carrier.this.isRunning = false;
                     } else {
-                        // TODO write to file.
-//                        logger.info("response={}",new String(response.getData()));
+                    	
+                    	// conver to row
+                    	Row row = new Row();
+                    	row.setLineNum(response.getLineNumber());
+                    	row.setData(response.getData());
+                    	BytesReverseUtil.reverse(row.getData());
+                    	dataConsumerArrayManager.put(row);
                     }
 
                     isReTry = false;
@@ -111,7 +128,7 @@ public class CarryingClientLauncher {
             logger.info("{} was finished.", currentThread().getName());
 
         }
-
+        
     }
 
 
@@ -122,13 +139,18 @@ public class CarryingClientLauncher {
 
         consumers = new CarryingConsumer[CLI_NUM];
         countDown = new CountDownLatch(CARRIER_NUM);
-
+        
+        dataConsumerArrayManager = new DataConsumerArrayManager(option);
+        
         // 初始化Consumer池
         initConsumers(address, option);
 
         // 初始化搬运工
-        initCarriers();
+        initCarriers(dataConsumerArrayManager);
 
+        // 砖头写入文件
+        new MappedCarryingDataPersistenceDao(option, dataConsumerArrayManager).persistenceData();
+        
         countDown.await();
 
     }
@@ -152,10 +174,10 @@ public class CarryingClientLauncher {
     /**
      * 初始化搬运工
      */
-    private void initCarriers() {
-
+    private void initCarriers(DataConsumerArrayManager dataConsumerArrayManager) {
+    	
         for (int i = 0; i < CARRIER_NUM; i++) {
-            new Thread(new Carrier()).start();
+            new Thread(new Carrier(dataConsumerArrayManager)).start();
         }
 
     }
