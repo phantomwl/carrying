@@ -27,7 +27,7 @@ public class CarryingProvider {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final int serverPort;
-    private final ServerOption option;                // 服务器启动选项
+    private final ServerOption option;          // 服务器启动选项
     private final ExecutorService childPool;    // 客户端响应请求处理线程池
     private final ExecutorService businessPool; // 业务响应请求处理线程池
     private final CarryingProcess process;      // 搬运请求处理器
@@ -60,9 +60,9 @@ public class CarryingProvider {
                 socket.setPerformancePreferences(
                         option.getChildPps()[0],
                         option.getChildPps()[1],
-                        option.getChildPps()[0]);
+                        option.getChildPps()[2]);
 //                socket.setPerformancePreferences(0,0,3);
-//                socket.setTrafficClass(255);
+                socket.setTrafficClass(option.getChildTrafficClass());
 
                 childPool.execute(new Runnable() {
 
@@ -123,8 +123,8 @@ public class CarryingProvider {
 //                                                dos.write(buf, 0, pos);
                                             }
                                             dos.flush();
-                                        } catch (Exception exception) {
-                                            logger.info("Child@Process sequence={}; occur an error, ingore this request.", sequence, exception);
+                                        } catch (Throwable throwable) {
+                                            logger.warn("Child@Process sequence={}; occur an error, ingore this request.", sequence, throwable);
                                         }//try
 
                                     }

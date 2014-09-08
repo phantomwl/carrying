@@ -17,6 +17,7 @@ public class CarryingServerLauncher {
 
     public static void main(String... args) throws IOException {
 
+//        args = new String[]{"/Users/vlinux/1G.txt","8787","/Users/vlinux/IdeaProjects/carrying-github-project/carrying/carrying-server/carrying-server.properties"};
         final ServerOption serverOption = new ServerOption(args[2]);
         final int serverPort = Integer.valueOf(args[1]);
 

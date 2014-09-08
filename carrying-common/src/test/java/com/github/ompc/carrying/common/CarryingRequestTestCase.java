@@ -16,7 +16,7 @@ public class CarryingRequestTestCase {
     @Test
     public void test_create_CarryingRequest() {
 
-        final int index = 0x1FF;
+        final int index = 0;
         final boolean isReTry = false;
 
         for( int cursor=0; cursor<0xFFFF; cursor++ ) {

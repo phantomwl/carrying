@@ -93,6 +93,7 @@ public class CarryingClientLauncher {
                     lock.lock();
                     try {
                         condition.await(500, MILLISECONDS);
+//                        condition.await();
                     } catch (InterruptedException e) {
                         currentThread().interrupt();
                     } finally {
@@ -108,6 +109,7 @@ public class CarryingClientLauncher {
                         Carrier.this.isRunning = false;
                     } else {
                         //do nothing
+//                        logger.info("line="+response.getLineNumber());
                     }
 
                     isReTry = false;
@@ -203,6 +205,8 @@ public class CarryingClientLauncher {
 
 
     public static void main(String... args) throws IOException, InterruptedException {
+
+//        args = new String[]{"127.0.0.1","8787","/Users/vlinux/IdeaProjects/carrying-github-project/carrying/carrying-client/carrying-client.properties"};
 
         final long startTime = System.currentTimeMillis();
         final ClientOption clientOption = new ClientOption(args[2]);
