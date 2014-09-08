@@ -146,6 +146,20 @@ public class CarryingClientLauncher {
             consumers[index] = consumer;
             consumer.connect();
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread("Consumer-Shutdown-Hook"){
+
+            @Override
+            public void run() {
+                for( CarryingConsumer consumer : consumers ) {
+                    if( null != consumer
+                            && consumer.isConnected()) {
+                        consumer.disconnect();
+                    }
+                }
+            }
+        });
+
         logger.info("init consumers finished. count={}", CLI_NUM);
     }
 
