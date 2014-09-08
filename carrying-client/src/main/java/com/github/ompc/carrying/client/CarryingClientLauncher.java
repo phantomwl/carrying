@@ -117,7 +117,7 @@ public class CarryingClientLauncher {
                     cursor++;
                 } catch (IOException e) {
                     logger.warn("consumer={} send request={} failed, need retry!",
-                            new Object[]{index, request.getSequence()}, e);
+                            new Object[]{index, request.getSequence(), e});
                     isReTry = true;
                     continue;
                 }//try
