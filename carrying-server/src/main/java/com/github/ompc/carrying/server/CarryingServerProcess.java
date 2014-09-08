@@ -33,7 +33,7 @@ public class CarryingServerProcess implements CarryingProcess {
 
 
     @Override
-    public CarryingResponse process(CarryingRequest request) throws Throwable {
+    public CarryingResponse process(CarryingRequest request) throws Exception {
 
         final int index = request.getIndex();
         final boolean isReTry = request.isReTry();

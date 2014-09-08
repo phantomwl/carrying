@@ -15,6 +15,6 @@ public interface CarryingProcess {
      * @return 搬运应答报文
      * @throws Throwable 搬运出错异常
      */
-    CarryingResponse process(CarryingRequest request) throws Throwable;
+    CarryingResponse process(CarryingRequest request) throws Exception;
 
 }
