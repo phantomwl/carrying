@@ -123,8 +123,8 @@ public class CarryingProvider {
 //                                                dos.write(buf, 0, pos);
                                             }
                                             dos.flush();
-                                        } catch (Throwable throwable) {
-                                            logger.info("Child@Process sequence={}; occur an error, ingore this request.", sequence, throwable);
+                                        } catch (Exception exception) {
+                                            logger.info("Child@Process sequence={}; occur an error, ingore this request.", sequence, exception);
                                         }//try
 
                                     }
